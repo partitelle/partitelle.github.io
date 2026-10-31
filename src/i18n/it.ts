@@ -325,7 +325,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "tutti e tre aderiscono all'EU-U.S. Data Privacy Framework, che la Commissione europea riconosce come adeguato: i trasferimenti dei dati negli Stati Uniti si basano su questa adesione (per Neon aderisce Databricks, Inc., il gruppo di cui fa parte). i loro termini sulla protezione dei dati prevedono anche le clausole contrattuali standard della Commissione europea.",
+            "tutti e tre aderiscono all'EU-U.S. Data Privacy Framework, che la Commissione europea riconosce come adeguato. i trasferimenti dei dati negli Stati Uniti si basano su questa adesione (per Neon aderisce Databricks, Inc., il gruppo di cui fa parte). i loro termini sulla protezione dei dati prevedono anche le clausole contrattuali standard della Commissione europea.",
           ],
         },
       ],

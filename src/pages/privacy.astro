@@ -32,7 +32,7 @@ const segs = (list: readonly Segment[]) =>
             {
               p.sections.map((section, i) => (
                 <li>
-                  <a href={`#${section.id}`} class="inline-flex min-h-8 items-center text-base no-underline underline-offset-4 hover:underline lg:text-sm">{heading(i, section.title)}</a>
+                  <a href={`#${section.id}`} class="inline-flex min-h-8 items-center py-1 leading-snug text-base no-underline underline-offset-4 hover:underline lg:text-sm">{heading(i, section.title)}</a>
                 </li>
               ))
             }
