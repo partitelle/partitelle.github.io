@@ -1,0 +1,19 @@
+---
+import { it } from "../i18n/it";
+import SectionLabel from "./SectionLabel.astro";
+---
+<section id="problema" aria-labelledby="problem-title" class="bg-white text-black">
+  <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:grid lg:grid-cols-12 lg:gap-12 lg:px-12 lg:py-24">
+    <SectionLabel id="problem-title" class="lg:col-span-3 lg:self-start">{it.problem.title}</SectionLabel>
+    <ul role="list" class="mt-8 max-w-4xl divide-y divide-black/12 lg:col-span-9 lg:mt-0">
+      {
+        it.problem.items.map((item) => (
+          <li class="py-10 first:pt-0 last:pb-0 lg:py-12">
+            <p class="text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-balance max-w-3xl lg:text-5xl">{item.line}</p>
+            <p class="mt-4 max-w-[34rem] text-xl leading-relaxed text-muted">{item.detail}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

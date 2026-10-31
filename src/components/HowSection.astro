@@ -1,0 +1,72 @@
+---
+import { it } from "../i18n/it";
+import ChatSummary from "./ChatSummary.astro";
+import SectionLabel from "./SectionLabel.astro";
+import Teams from "./Teams.astro";
+
+const { names } = it.panels;
+const [step1, step2, step3] = it.how.steps;
+
+const stepOnePlayers = [{ name: names[0], status: "in" as const }];
+const stepTwoPlayers = names.slice(0, 9).map((name, i) => ({
+  name,
+  status: i === 3 || i === 7 ? ("maybe" as const) : ("in" as const),
+}));
+const pick = (indexes: number[]) =>
+  indexes.flatMap((i) => (names[i] ? [{ name: names[i] as string }] : []));
+const black = pick([2, 3, 6, 8, 9]);
+const white = pick([0, 1, 4, 5, 7]);
+
+const numberClass = "text-5xl font-bold leading-none tracking-[-0.03em]";
+const titleClass = "mt-4 text-2xl leading-[1.1] lg:text-4xl";
+const bodyClass = "mt-4 max-w-[34rem] text-xl leading-relaxed text-muted";
+const itemClass = "lg:grid lg:grid-cols-12 lg:items-start lg:gap-12";
+const panelClass = "mt-8 lg:col-span-6 lg:col-start-7 lg:mt-0";
+---
+<section id="come-funziona" aria-labelledby="how-title" class="bg-paper text-black">
+  <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:px-12 lg:py-24">
+    <SectionLabel id="how-title">{it.how.title}</SectionLabel>
+    <ol role="list" class="mt-12 flex flex-col gap-16 lg:mt-16 lg:gap-24">
+      <li class={itemClass}>
+        <div class="lg:col-span-5">
+          <span aria-hidden="true" class={numberClass}>1</span>
+          <h3 class={titleClass}>{step1.title}</h3>
+          <p class={bodyClass}>{step1.body}</p>
+        </div>
+        <div class={panelClass}>
+          <ChatSummary label={step1.panelLabel} players={stepOnePlayers} />
+        </div>
+      </li>
+      <li class={itemClass}>
+        <div class="lg:col-span-5">
+          <span aria-hidden="true" class={numberClass}>2</span>
+          <h3 class={titleClass}>{step2.title}</h3>
+          <p class={bodyClass}>{step2.body}</p>
+          <dl aria-label={it.how.keywordsLabel} class="mt-6 flex flex-col gap-3">
+            {
+              it.how.keywords.map((keyword) => (
+                <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <dt class="inline-flex rounded-pill border border-black/12 bg-white px-4 py-1 text-base font-medium">{keyword.word}</dt>
+                  <dd class="text-base text-muted">{keyword.meaning}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </div>
+        <div class={panelClass}>
+          <ChatSummary label={step2.panelLabel} players={stepTwoPlayers} />
+        </div>
+      </li>
+      <li class={itemClass}>
+        <div class="lg:col-span-5">
+          <span aria-hidden="true" class={numberClass}>3</span>
+          <h3 class={titleClass}>{step3.title}</h3>
+          <p class={bodyClass}>{step3.body}</p>
+        </div>
+        <div class={panelClass}>
+          <Teams label={step3.panelLabel} black={black} white={white} uid="step3" />
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>

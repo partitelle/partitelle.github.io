@@ -1,0 +1,75 @@
+---
+import { it } from "../i18n/it";
+
+interface Member {
+  name: string;
+  changed?: boolean;
+}
+
+interface Props {
+  label: string;
+  black: Member[];
+  white: Member[];
+  meta?: string;
+  size?: "default" | "compact";
+  uid?: string;
+}
+
+const {
+  label,
+  black,
+  white,
+  meta = `${it.panels.day} · ${it.panels.time} · ${black.length + white.length}/${black.length + white.length}`,
+  size = "default",
+  uid = "teams",
+} = Astro.props;
+
+const compact = size === "compact";
+const panelPad = compact ? "p-4" : "p-4 sm:p-6";
+const titleClass = compact
+  ? "text-base font-bold"
+  : "text-base font-bold sm:text-xl";
+const rowSize = compact ? "min-h-8 py-1 text-sm" : "min-h-10 py-2 text-base";
+
+const teams = [
+  {
+    key: "black",
+    title: it.panels.teamBlack,
+    members: black,
+    panel: "on-dark rounded-panel bg-black text-white",
+    divide: "divide-white/20",
+  },
+  {
+    key: "white",
+    title: it.panels.teamWhite,
+    members: white,
+    panel: "rounded-panel border border-black/12 bg-white text-black",
+    divide: "divide-black/12",
+  },
+];
+---
+<figure class="w-full max-w-xl">
+  <figcaption class="sr-only">{label}</figcaption>
+  <p aria-hidden="true" class="mb-3 text-sm text-muted">{meta}</p>
+  <div class="grid grid-cols-2 gap-2 sm:gap-4">
+    {
+      teams.map((team) => (
+        <div class:list={[team.panel, panelPad]}>
+          <p id={`team-${team.key}-${uid}`} class={titleClass}>{team.title}</p>
+          <ul role="list" aria-labelledby={`team-${team.key}-${uid}`} class:list={["mt-3 divide-y", team.divide]}>
+            {team.members.map((member) => (
+              <li
+                data-changed={member.changed ? "" : undefined}
+                class:list={[
+                  "flex items-center",
+                  rowSize,
+                  member.changed ? "-mx-3 rounded-pill bg-yellow px-3 text-black" : "",
+                ]}
+              >{member.name}</li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</figure>
