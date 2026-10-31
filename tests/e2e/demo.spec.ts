@@ -315,7 +315,8 @@ test.describe("reduced motion", () => {
     await d.leave.click();
     await d.reset.click();
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
-    await expect(page.locator(".cta")).toHaveCount(2);
+    await expect(page.locator(".cta")).toHaveCount(3);
+    await expect(d.section.locator(".cta")).toHaveCount(0);
     await expect(page.locator("[data-whistle]")).toHaveCount(1);
     const transitions = await d.section
       .locator("button")
@@ -331,7 +332,8 @@ test.describe("default motion", () => {
     const d = demo(page);
     await d.join.click();
     await d.make.click();
-    await expect(page.locator(".cta")).toHaveCount(2);
+    await expect(page.locator(".cta")).toHaveCount(3);
+    await expect(d.section.locator(".cta")).toHaveCount(0);
     const names = await d.section
       .locator("*")
       .evaluateAll((els) =>

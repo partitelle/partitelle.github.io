@@ -1,11 +1,9 @@
 ---
 import { it } from "../i18n/it";
+import { ctaPill as pill } from "../lib/classes";
 import WhistleMark from "./WhistleMark.astro";
-
-const pill =
-  "cta inline-flex min-h-12 items-center justify-center rounded-pill bg-black px-6 font-medium text-white no-underline";
 ---
-<section class="flex min-h-svh flex-col bg-yellow text-black" aria-labelledby="hero-title">
+<section class="flex flex-col lg:min-h-svh bg-yellow text-black" aria-labelledby="hero-title">
   <header class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6 lg:px-12">
     <a href="/" class="inline-flex min-h-12 items-center" aria-label={it.site.name}>
       <img src="/brand/logo-lockup.svg" alt="" width="858" height="200" class="h-8 w-auto sm:h-10" />
@@ -13,7 +11,7 @@ const pill =
     <a href={it.links.bot} class={`${pill} text-base`}>{it.hero.ctaSmall}</a>
   </header>
 
-  <div class="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center gap-12 px-6 pb-16 pt-6 lg:flex-row lg:items-center lg:justify-between lg:px-12">
+  <div class="mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center gap-10 px-6 pb-16 pt-6 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-12">
     <div class="max-w-4xl text-left">
       <h1
         id="hero-title"
@@ -29,7 +27,7 @@ const pill =
     </div>
     <WhistleMark
       label={it.site.markLabel}
-      class="w-[clamp(11rem,34vw,26rem)] shrink-0 self-start text-black lg:self-center"
+      class="w-28 sm:w-40 lg:w-[clamp(11rem,34vw,26rem)] shrink-0 self-start text-black lg:self-center"
     />
   </div>
 </section>

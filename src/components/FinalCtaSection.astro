@@ -1,0 +1,17 @@
+---
+import { it } from "../i18n/it";
+import { ctaPill } from "../lib/classes";
+
+const [line1, line2] = it.finalCta.title;
+---
+<section id="gioca" aria-labelledby="cta-title" class="bg-yellow text-black">
+  <div class="mx-auto w-full max-w-7xl px-6 py-20 lg:px-12 lg:py-32">
+    <h2 id="cta-title" class="max-w-4xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-[4rem]">
+      <span class="block">{line1}</span> <span class="block">{line2}</span>
+    </h2>
+    <div class="mt-10 flex flex-col items-start gap-3">
+      <a href={it.links.bot} class={`${ctaPill} text-lg`}>{it.hero.ctaPrimary}</a>
+      <p class="text-sm text-muted">{it.finalCta.availability}</p>
+    </div>
+  </div>
+</section>
