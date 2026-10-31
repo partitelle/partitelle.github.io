@@ -1,0 +1,50 @@
+---
+import "../styles/global.css";
+import { it } from "../i18n/it";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = it.site.title, description = it.site.description } =
+  Astro.props;
+const canonical = "https://partitelle.github.io/";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: it.site.name,
+  url: canonical,
+  inLanguage: "it",
+  description,
+};
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#FFD21F" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={it.site.name} />
+    <meta property="og:locale" content={it.site.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <!-- TODO: og:image and twitter:image (1200x630 PNG exported from brand/og-image.svg) land in a later PR. -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

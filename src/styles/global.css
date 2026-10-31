@@ -1,0 +1,92 @@
+@import "tailwindcss";
+@import "@fontsource-variable/outfit/wght.css";
+
+/* Tokens from brand/BRAND.md ("Codice pronto"). Only palette colors exist:
+   the default Tailwind palette, shadows and radii are reset. The staging
+   orange is deliberately absent: it is never used in production. */
+@theme {
+  --color-*: initial;
+  --color-yellow: #ffd21f;
+  --color-black: #111111;
+  --color-white: #ffffff;
+  --color-paper: #f4f2ec;
+  --color-muted: #4a4d55;
+
+  --font-*: initial;
+  --font-brand:
+    "Outfit Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-brand);
+
+  --radius-*: initial;
+  --radius-pill: 999px;
+  --radius-panel: 20px;
+
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-brand);
+    font-weight: 500;
+    color: var(--color-black);
+    background: var(--color-white);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-transform: none;
+  }
+
+  /* Focus ring: black on yellow/white, yellow on black. */
+  :focus-visible {
+    outline: 3px solid var(--color-black);
+    outline-offset: 2px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-yellow);
+  }
+}
+
+/* The one animation: the three sound rays of the whistle appear in turn,
+   once, in about 600ms. Rays are visible by default, so reduced motion
+   and no-animation contexts show the static mark. */
+@keyframes whistle-ray {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.whistle-ray {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: whistle-ray 200ms ease-out both;
+}
+
+.whistle-ray-1 {
+  animation-delay: 0ms;
+}
+
+.whistle-ray-2 {
+  animation-delay: 200ms;
+}
+
+.whistle-ray-3 {
+  animation-delay: 400ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .whistle-ray {
+    animation: none;
+  }
+}

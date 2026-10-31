@@ -1,0 +1,26 @@
+---
+interface Props {
+  label: string;
+  class?: string;
+}
+
+const { label, class: className } = Astro.props;
+---
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="100 89 327 323"
+  role="img"
+  aria-label={label}
+  class={className}
+>
+  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="22">
+    <path class="whistle-ray whistle-ray-1" d="M196 150 178 116" />
+    <path class="whistle-ray whistle-ray-2" d="M221 142V100" />
+    <path class="whistle-ray whistle-ray-3" d="M246 150 264 116" />
+  </g>
+  <circle cx="394" cy="206" r="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="18" />
+  <path
+    d="M122 188H198V218H244V188H300A112 112 0 1 1 190.6 276H122A22 22 0 0 1 100 254V210A22 22 0 0 1 122 188Z"
+    fill="currentColor"
+  />
+</svg>

@@ -1,0 +1,44 @@
+# partitelle.github.io
+
+Landing site for **partitelle**, a project that helps friends organize casual team games: it collects who is in, keeps the list updated and builds the teams. Published with GitHub Pages at <https://partitelle.github.io>.
+
+## Stack
+
+- [Astro](https://astro.build) (static output) with strict TypeScript
+- [Tailwind CSS](https://tailwindcss.com) v4, CSS-first (`@theme` in `src/styles/global.css`), palette colors only
+- Outfit, self-hosted through [Fontsource](https://fontsource.org) (no third-party font requests)
+- [Biome](https://biomejs.dev) for lint and format, `astro check` for types
+- [Playwright](https://playwright.dev) + axe-core for e2e and accessibility, [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) for budgets
+- pnpm (via corepack), Node 24 (`.nvmrc`)
+- No UI framework: vanilla TypeScript only, where JS is needed
+
+## Develop
+
+```sh
+corepack enable
+pnpm i
+pnpm dev
+```
+
+## Scripts
+
+| Script          | What it does                                                            |
+| --------------- | ----------------------------------------------------------------------- |
+| `pnpm dev`      | Astro dev server                                                        |
+| `pnpm build`    | Static build into `dist/`                                               |
+| `pnpm preview`  | Serve `dist/`                                                           |
+| `pnpm check`    | `astro check` (types)                                                   |
+| `pnpm lint`     | `biome ci .`                                                            |
+| `pnpm format`   | Format with Biome                                                       |
+| `pnpm test:e2e` | Playwright tests against the built site (run `pnpm build` first)        |
+| `pnpm lhci`     | Lighthouse CI on `dist/` (needs Chrome; set `CHROME_PATH` if not found) |
+
+## CI/CD
+
+- `.github/workflows/ci.yml` runs on pull requests and pushes to `main`: `lint` (Biome + astro check), `build` (uploads `dist`), `e2e` (needs `build`; uploads report and screenshots), `lighthouse` (needs `build`) and `semantic-pr-title` (pull requests only).
+- `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (and manually), then runs a smoke test on the live URL.
+- Third-party actions are pinned to commit SHAs; Dependabot updates npm and actions weekly, grouping minor and patch bumps.
+
+## Brand
+
+The brand rules (colors, type, components, motion, accessibility) live in [`brand/BRAND.md`](brand/BRAND.md), together with the logo SVGs, which are the source of truth. The site serves copies from `public/brand/` and `public/favicon.svg`. All user-facing strings live in `src/i18n/it.ts`.
