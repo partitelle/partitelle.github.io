@@ -41,4 +41,4 @@ pnpm dev
 
 ## Brand
 
-The brand rules (colors, type, components, motion, accessibility) live in [`brand/BRAND.md`](brand/BRAND.md), together with the logo SVGs, which are the source of truth. The site serves copies from `public/brand/` and `public/favicon.svg`. All user-facing strings live in `src/i18n/it.ts`.
+Brand tokens (colors, type) and motion variables live in `src/styles/global.css`. The logo SVGs the site serves live in `public/brand/` and `public/favicon.svg`; `brand/` keeps the app icons, the yellow logo mark and `og-image.svg`, the source of `public/og-image.png`. All user-facing strings live in `src/i18n/it.ts`.

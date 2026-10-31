@@ -5,7 +5,7 @@ Astro landing site for partitelle, published with GitHub Pages at https://partit
 ## Read first
 
 - [README.md](README.md) for the stack, scripts and CI/CD.
-- [brand/BRAND.md](brand/BRAND.md) for colors, type, components and accessibility (the logo SVGs there are the source of truth).
+- Brand tokens (colors, type) live in the CSS custom properties in `src/styles/global.css`; the motion rules (durations, easing, reduced motion) are CSS variables in the same file. The logo SVGs the site serves are in `public/brand/`.
 
 ## Rules
 
@@ -19,4 +19,4 @@ Astro landing site for partitelle, published with GitHub Pages at https://partit
 - Never push to `main`; open a PR.
 - A push to `main` publishes the live site. Merging needs a maintainer's explicit OK.
 
-Company context: if you have access to the private repo `partitelle/hq` (usually cloned at `../partitelle-hq`), read its CLAUDE.md for decisions, priorities and approval rules. This repo must stay self-contained without it.
+Company context: if you have access to the private repo `partitelle/hq` (usually cloned at `../partitelle-hq`), read its CLAUDE.md for decisions, priorities and approval rules. The full brand guide is there at `departments/design-brand/brand/BRAND.md` (optional: this repo must stay self-contained without it).
