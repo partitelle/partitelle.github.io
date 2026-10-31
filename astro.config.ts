@@ -3,7 +3,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  site: "https://partitelle.github.io",
+  site: "https://partitelle.com",
   output: "static",
   integrations: [sitemap()],
   vite: {

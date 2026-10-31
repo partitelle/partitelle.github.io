@@ -2,6 +2,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
 const BOT_URL = "https://t.me/PartitelleBot?startgroup=true";
+const SITE_URL = "https://partitelle.com/";
 
 test("renders the h1", async ({ page }) => {
   await page.goto("/");
@@ -24,7 +25,7 @@ test("declares a valid social preview image", async ({ page, request }) => {
   const twitterImage = await meta('meta[name="twitter:image"]');
   expect(ogImage).not.toBeNull();
   expect(twitterImage).toBe(ogImage);
-  expect(ogImage).toMatch(/^https:\/\/partitelle\.github\.io\//);
+  expect(ogImage).toBe(`${SITE_URL}og-image.png`);
   expect(await meta('meta[property="og:image:width"]')).toBe("1200");
   expect(await meta('meta[property="og:image:height"]')).toBe("630");
   expect(await meta('meta[property="og:image:type"]')).toBe("image/png");
@@ -39,6 +40,33 @@ test("declares a valid social preview image", async ({ page, request }) => {
   expect(body.readUInt32BE(16)).toBe(1200);
   expect(body.readUInt32BE(20)).toBe(630);
   expect(body.length).toBeLessThan(300 * 1024);
+});
+
+test("every absolute URL uses the custom domain", async ({ page, request }) => {
+  await page.goto("/");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    SITE_URL,
+  );
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+    "content",
+    SITE_URL,
+  );
+  const jsonLd = JSON.parse(
+    (await page
+      .locator('script[type="application/ld+json"]')
+      .textContent()) as string,
+  );
+  expect(jsonLd.url).toBe(SITE_URL);
+  expect(await page.content()).not.toContain("github.io");
+
+  const robots = await (await request.get("/robots.txt")).text();
+  expect(robots).toContain(`Sitemap: ${SITE_URL}sitemap-index.xml`);
+  const index = await (await request.get("/sitemap-index.xml")).text();
+  expect(index).toContain(`<loc>${SITE_URL}sitemap-0.xml</loc>`);
+  const sitemap = await (await request.get("/sitemap-0.xml")).text();
+  expect(sitemap).toContain(`<loc>${SITE_URL}</loc>`);
+  expect(sitemap).not.toContain("github.io");
 });
 
 test("has no axe violations", async ({ page }) => {

@@ -9,7 +9,7 @@ interface Props {
 
 const { title = it.site.title, description = it.site.description } =
   Astro.props;
-const canonical = "https://partitelle.github.io/";
+const canonical = "https://partitelle.com/";
 const ogImage = new URL("/og-image.png", Astro.site ?? canonical).href;
 const jsonLd = {
   "@context": "https://schema.org",

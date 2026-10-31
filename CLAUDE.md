@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Astro landing site for partitelle, published with GitHub Pages at https://partitelle.github.io.
+Astro landing site for partitelle, published with GitHub Pages at https://partitelle.com (custom domain set in the Pages settings; https://partitelle.github.io redirects there).
 
 ## Read first
 
