@@ -1,0 +1,10 @@
+---
+import { it } from "../i18n/it";
+import { ctaPill as pill } from "../lib/classes";
+---
+<header class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6 lg:px-12">
+  <a href="/" class="inline-flex min-h-12 items-center" aria-label={it.site.name}>
+    <img src="/brand/logo-lockup.svg" alt="" width="858" height="200" class="h-8 w-auto sm:h-10" />
+  </a>
+  <a href={it.links.bot} class={`${pill} text-base`}>{it.hero.ctaSmall}</a>
+</header>
