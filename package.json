@@ -2,6 +2,7 @@
   "name": "partitelle.github.io",
   "version": "0.1.0",
   "private": true,
+  "license": "UNLICENSED",
   "type": "module",
   "packageManager": "pnpm@12.16.1",
   "scripts": {
