@@ -165,6 +165,7 @@ export const it = {
     tagline: "fatto da chi organizza la partita del mercoledì",
     github: "partitelle su GitHub",
     githubLabel: "github",
+    rights: "tutti i diritti riservati",
     logoAlt: "partitelle",
   },
   links: {

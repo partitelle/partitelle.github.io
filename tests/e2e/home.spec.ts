@@ -296,3 +296,12 @@ test("the page never mentions the payment reminder", async ({ page }) => {
   const html = await page.content();
   expect(html).not.toMatch(/quota|pagat|promemoria/i);
 });
+
+test("the footer shows the copyright and the rights notice", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("footer p").last()).toHaveText(
+    `© ${new Date().getFullYear()} partitelle · tutti i diritti riservati`,
+  );
+});

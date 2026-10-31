@@ -1,0 +1,12 @@
+partitelle website
+Copyright © 2026 partitelle. All rights reserved.
+
+This repository is public so anyone can see how the site is built. Being public does not give you a license to reuse it. Viewing and forking it on GitHub, as GitHub's Terms of Service allow, is fine.
+
+Content: the text of the site (including the copy in src/i18n/), the images, the social preview image (public/og-image.png) and the brand assets (public/brand/, public/favicon.svg) are not licensed for reuse.
+
+Code: the source code is not licensed for reuse either, unless a file says otherwise.
+
+Third-party packages and fonts keep their own licenses.
+
+For the name "partitelle" and the whistle mark, see TRADEMARKS.md.

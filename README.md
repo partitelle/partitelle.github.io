@@ -43,3 +43,7 @@ pnpm dev
 ## Brand
 
 Brand tokens (colors, type) and motion variables live in `src/styles/global.css`. The logo SVGs the site serves live in `public/brand/` and `public/favicon.svg`; `brand/` keeps the app icons, the yellow logo mark and `og-image.svg`, the source of `public/og-image.png`. All user-facing strings live in `src/i18n/it.ts`.
+
+## License
+
+This repository has no open-source license: see [NOTICE](NOTICE) for the code and the content, and [TRADEMARKS.md](TRADEMARKS.md) for the name and the marks.
