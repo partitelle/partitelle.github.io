@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "@fontsource-variable/outfit/wght.css";
 
-/* Tokens from brand/BRAND.md ("Codice pronto"). Only palette colors exist:
+/* Brand tokens (colors, type, radii). Only palette colors exist:
    the default Tailwind palette, shadows and radii are reset. The staging
    orange is deliberately absent: it is never used in production. */
 @theme {
@@ -53,7 +53,7 @@
   }
 }
 
-/* Landing motion (spec: brand/BRAND.md, "Movimento"). Only transform and
+/* Landing motion (durations, easing and reduced-motion rules). Only transform and
    opacity move. The three rays of the whistle appear in turn (intro), then
    blow one short whistle, then stay still: all automatic motion ends in
    about 2s, well under 5s. Hovering, tapping or focusing the mark replays
