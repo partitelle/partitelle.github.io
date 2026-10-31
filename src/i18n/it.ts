@@ -465,7 +465,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "il bot non prende decisioni automatizzate che abbiano effetti giuridici o simili su di te. le squadre sono fatte a sorte.",
+            "il bot non prende decisioni automatizzate che abbiano effetti giuridici o simili su di te. le squadre sono sorteggiate.",
           ],
         },
       ],
@@ -538,8 +538,8 @@ export const it = {
           "esempio di riepilogo: 9 posti presi su 10, di cui 2 in forse.",
       },
       {
-        title: "squadre a sorte",
-        body: "quando tutti e dieci hanno confermato, il bot fa le squadre a sorte: nera e bianca, cinque contro cinque.",
+        title: "squadre sorteggiate",
+        body: "quando tutti e dieci hanno confermato, il bot sorteggia le squadre: nera e bianca, cinque contro cinque.",
         panelLabel:
           "esempio di squadre: squadra nera e squadra bianca, cinque contro cinque.",
       },
@@ -568,10 +568,9 @@ export const it = {
     makeTeams: "fai le squadre",
     hintMissingOne: "manca 1 conferma",
     hintMissing: "mancano {n} conferme",
-    hintReady: "a sorte, cinque contro cinque",
-    teamsPlaceholder: "qui escono le squadre, a sorte.",
-    teamsLabel:
-      "squadre di prova, fatte a sorte: squadra nera e squadra bianca.",
+    hintReady: "sorteggio, cinque contro cinque",
+    teamsPlaceholder: "qui escono le squadre sorteggiate.",
+    teamsLabel: "squadre di prova, sorteggiate: squadra nera e squadra bianca.",
     reset: "ricomincia",
     status: {
       initial: "nove posti presi, manca il tuo.",
@@ -586,8 +585,8 @@ export const it = {
       full: "la lista è piena: {target} posti su {target}.",
       removed: "fatto: il tuo posto ora è libero.",
       notIn: "non sei in lista: non c'è niente da togliere.",
-      teamsMadeBlack: "squadre fatte a sorte: sei nella squadra nera.",
-      teamsMadeWhite: "squadre fatte a sorte: sei nella squadra bianca.",
+      teamsMadeBlack: "squadre sorteggiate: sei nella squadra nera.",
+      teamsMadeWhite: "squadre sorteggiate: sei nella squadra bianca.",
       teamsShownBlack: "le squadre ci sono già: sei nella squadra nera.",
       teamsShownWhite: "le squadre ci sono già: sei nella squadra bianca.",
       teamsLockedOne: "per le squadre servono dieci conferme: ne manca 1.",
@@ -633,13 +632,13 @@ export const it = {
         body: "il bot scrive il riepilogo una volta e poi lo aggiorna nello stesso messaggio. giorno, ora, posti e campo li cambi quando vuoi.",
       },
       {
-        title: "forse? il posto resta tuo",
+        title: "in forse? il posto resta tuo",
         body: "nel dubbio ti segni in forse: tieni il posto, ma per le squadre contano solo le conferme.",
         keyword: "proponimi",
       },
       {
-        title: "squadre a sorte, ritocchi con una riga",
-        body: "con tutte le conferme chiedi le squadre: nera e bianca, fatte a sorte. per cambiare due nomi basta scriverlo.",
+        title: "squadre sorteggiate, ritocchi con una riga",
+        body: "con tutte le conferme chiedi le squadre: nera e bianca, sorteggiate. per cambiare due nomi basta scriverlo.",
         keyword: "scambia luca con sara",
       },
     ],
