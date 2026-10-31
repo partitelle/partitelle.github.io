@@ -18,7 +18,7 @@ test("both sections are named regions with the right heading outline", async ({
     page.getByRole("region", { name: "come funziona" }),
   ).toHaveAttribute("id", "come-funziona");
   const h2 = page.getByRole("heading", { level: 2 });
-  await expect(h2).toHaveText(["il problema", "come funziona"]);
+  await expect(h2).toHaveText(["il problema", "come funziona", "provalo"]);
   const h3 = page.locator("#come-funziona").getByRole("heading", { level: 3 });
   await expect(h3).toHaveText([
     "aggiungi il bot al gruppo",

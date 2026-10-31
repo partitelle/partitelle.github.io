@@ -1,0 +1,278 @@
+---
+import { it } from "../i18n/it";
+import ChatSummary from "./ChatSummary.astro";
+import MarkStatic from "./MarkStatic.astro";
+import SectionLabel from "./SectionLabel.astro";
+import Teams from "./Teams.astro";
+
+const { demo, panels } = it;
+const prefill = panels.names.slice(0, 9);
+const players = prefill.map((name) => ({ name, status: "in" as const }));
+
+// Strings the client needs, read from the DOM so they are not duplicated in the bundle.
+const strings = {
+  you: demo.you,
+  names: prefill,
+  hintMissingOne: demo.hintMissingOne,
+  hintMissing: demo.hintMissing,
+  hintReady: demo.hintReady,
+  counterSrOne: panels.counterSrOne,
+  counterSr: panels.counterSr,
+  status: demo.status,
+};
+
+// Sample rows and panels the client clones, so classes never drift from the server render.
+const rowSamples = [
+  { name: "a", status: "in" as const },
+  { name: "b", status: "maybe" as const },
+  { name: "c", status: "in" as const, changed: true },
+  { name: "d", status: "maybe" as const, changed: true },
+];
+const teamSamples = [{ name: "a" }, { name: "b", changed: true }];
+
+const pill =
+  "inline-flex min-h-12 cursor-pointer items-center rounded-pill border border-black bg-black px-5 text-base font-bold text-white";
+const pillPress = "active:bg-yellow active:text-black";
+const teamsButton = [
+  pill,
+  "w-full justify-center sm:w-auto",
+  "aria-disabled:cursor-not-allowed aria-disabled:border-black/12 aria-disabled:bg-paper aria-disabled:text-muted",
+  "aria-[disabled=false]:active:bg-yellow aria-[disabled=false]:active:text-black",
+].join(" ");
+---
+<section id="prova" aria-labelledby="demo-title" class="bg-white text-black">
+  <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:px-12 lg:py-24">
+    <partitelle-demo class="block lg:grid lg:grid-cols-12 lg:grid-rows-[auto_1fr] lg:gap-x-12">
+      <div class="lg:col-span-5 lg:row-start-1">
+        <SectionLabel id="demo-title">{demo.title}</SectionLabel>
+        <p class="mt-8 text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-balance lg:text-5xl">{demo.line}</p>
+        <p class="mt-4 max-w-[34rem] text-xl leading-relaxed text-muted">{demo.intro}</p>
+        <p class="mt-3 text-sm text-muted">{demo.note}</p>
+      </div>
+      <div class="mt-10 lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1 lg:mt-0 lg:self-start" data-demo-summary>
+        <ChatSummary label={demo.summaryLabel} players={players} />
+      </div>
+      <div class="mt-8 lg:col-span-5 lg:row-start-2 lg:mt-10">
+        <div hidden data-demo-keywords>
+          <p id="demo-keywords-label" class="text-sm text-muted">{demo.keywordsLabel}</p>
+          <div role="group" aria-labelledby="demo-keywords-label" class="mt-3 flex flex-wrap gap-2">
+            {
+              demo.keywords.map((word, i) => (
+                <button type="button" data-act={["join", "propose", "leave"][i]} class:list={[pill, pillPress]}>{word}</button>
+              ))
+            }
+          </div>
+        </div>
+        <div hidden data-demo-teams-row class="mt-6 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:gap-4">
+          <button type="button" data-act="teams" aria-disabled="true" aria-describedby="demo-teams-hint" class={teamsButton}>{demo.makeTeams}</button>
+          <p id="demo-teams-hint" data-demo-hint class="text-sm text-muted">{demo.hintMissingOne}</p>
+        </div>
+        <div class="mt-6 flex min-h-12 items-start gap-3">
+          <MarkStatic class="mt-0.5 size-5 shrink-0 text-black" />
+          <p role="status" data-demo-status class="text-base">{demo.status.initial}</p>
+        </div>
+        <div class="mt-6" data-demo-teams>
+          <p class="rounded-panel bg-paper p-4 text-base text-muted sm:p-6">{demo.teamsPlaceholder}</p>
+        </div>
+        <button hidden type="button" data-act="reset" class="mt-6 inline-flex min-h-11 cursor-pointer items-center text-base font-bold underline underline-offset-4">{demo.reset}</button>
+      </div>
+      <template data-demo-summary-tpl>
+        <ChatSummary label={demo.summaryLabel} players={rowSamples} target={5} />
+      </template>
+      <template data-demo-teams-tpl>
+        <Teams
+          label={demo.teamsLabel}
+          black={teamSamples}
+          white={teamSamples}
+          meta={`${panels.day} · ${panels.time} · 10/10`}
+          uid="demo"
+        />
+      </template>
+      <script type="application/json" data-demo-strings set:html={JSON.stringify(strings)} />
+    </partitelle-demo>
+  </div>
+</section>
+
+<script>
+  import {
+    canMakeTeams,
+    createDemoState,
+    type DemoResult,
+    type DemoState,
+    join,
+    leave,
+    makeTeams,
+    propose,
+  } from "../lib/demo-state";
+
+  type Strings = {
+    you: string;
+    names: string[];
+    hintMissingOne: string;
+    hintMissing: string;
+    hintReady: string;
+    counterSrOne: string;
+    counterSr: string;
+    status: Record<string, string>;
+  };
+
+  const fill = (text: string, values: Record<string, number>) =>
+    text.replace(/\{(\w+)\}/g, (_, key) => String(values[key]));
+
+  const SIMPLE: Record<string, string> = {
+    added: "added",
+    confirmed: "confirmed",
+    proposed: "proposed",
+    "moved-to-maybe": "movedToMaybe",
+    full: "full",
+    removed: "removed",
+    "not-in": "notIn",
+  };
+  const HIGHLIGHT_SUMMARY = new Set([
+    "added",
+    "confirmed",
+    "proposed",
+    "moved-to-maybe",
+    "already-in",
+  ]);
+
+  class PartitelleDemo extends HTMLElement {
+    connectedCallback() {
+      const $ = <T extends Element>(selector: string) =>
+        this.querySelector(selector) as T;
+      const str: Strings = JSON.parse($("[data-demo-strings]").textContent);
+      const you = str.you;
+      const rows = $("[data-demo-summary] ol");
+      const counter = $("[data-demo-summary] p.tabular-nums");
+      const teamsSlot = $("[data-demo-teams]");
+      const placeholder = teamsSlot.firstElementChild as Element;
+      const button = $<HTMLButtonElement>("[data-act=teams]");
+      const hint = $("[data-demo-hint]");
+      const status = $("[data-demo-status]");
+      const protos = new Map<string, Element>();
+      for (const li of $<HTMLTemplateElement>("[data-demo-summary-tpl]").content
+        .querySelectorAll("ol > li")) {
+        const { state, changed } = (li as HTMLElement).dataset;
+        protos.set(`${state}${changed === undefined ? "" : "*"}`, li);
+      }
+      const teamsFigure = $<HTMLTemplateElement>("[data-demo-teams-tpl]").content
+        .firstElementChild as Element;
+      const initial = () =>
+        createDemoState(str.names.map((name) => ({ name, maybe: false })));
+      let state: DemoState = initial();
+      let timer = 0;
+
+      const paint = (highlight: "summary" | "teams" | null) => {
+        const { players, target, teams } = state;
+        rows.replaceChildren(
+          ...Array.from({ length: target }, (_, i) => {
+            const player = players[i];
+            const key = player
+              ? `${player.maybe ? "maybe" : "in"}${highlight === "summary" && player.name === you ? "*" : ""}`
+              : "empty";
+            const li = (protos.get(key) as Element).cloneNode(true) as Element;
+            (li.children[0] as Element).textContent = String(i + 1);
+            if (player) (li.children[1] as Element).textContent = player.name;
+            return li;
+          }),
+        );
+        const taken = players.length;
+        (counter.children[0] as Element).textContent = `${taken}/${target}`;
+        (counter.children[1] as Element).textContent = fill(
+          taken === 1 ? str.counterSrOne : str.counterSr,
+          { n: taken, target },
+        );
+        if (teams) {
+          const figure = teamsFigure.cloneNode(true) as Element;
+          figure.querySelectorAll("ul").forEach((ul, t) => {
+            const names = t === 0 ? teams.black : teams.white;
+            const [plain, marked] = Array.from(ul.children) as [Element, Element];
+            ul.replaceChildren(
+              ...names.map((name) => {
+                const li = (
+                  highlight === "teams" && name === you ? marked : plain
+                ).cloneNode(true) as Element;
+                li.textContent = name;
+                return li;
+              }),
+            );
+          });
+          teamsSlot.replaceChildren(figure);
+        } else {
+          teamsSlot.replaceChildren(placeholder);
+        }
+        const missing = target - players.filter((p) => !p.maybe).length;
+        hint.textContent =
+          missing === 0
+            ? str.hintReady
+            : missing === 1
+              ? str.hintMissingOne
+              : fill(str.hintMissing, { n: missing });
+        button.setAttribute(
+          "aria-disabled",
+          String(!(canMakeTeams(state) || teams !== null)),
+        );
+      };
+
+      const say = (text: string) => {
+        clearTimeout(timer);
+        status.textContent = "";
+        timer = window.setTimeout(() => {
+          status.textContent = text;
+        }, 50);
+      };
+
+      const message = ({ kind, reachedTarget, teamsRevoked }: DemoResult) => {
+        const s = str.status;
+        const slot = state.players.findIndex((p) => p.name === you) + 1;
+        const { target, teams } = state;
+        const missing = target - state.players.filter((p) => !p.maybe).length;
+        const maybe = state.players.some((p) => p.name === you && p.maybe);
+        let key = SIMPLE[kind] as string;
+        if (kind === "already-in") key = maybe ? "alreadyMaybe" : "alreadyIn";
+        else if (kind === "teams-locked")
+          key = missing === 1 ? "teamsLockedOne" : "teamsLocked";
+        else if (kind === "teams-made" || kind === "teams-shown")
+          key = `${kind === "teams-made" ? "teamsMade" : "teamsShown"}${teams?.black.includes(you) ? "Black" : "White"}`;
+        return (
+          fill(s[key] as string, { slot, target, n: missing }) +
+          (teamsRevoked ? s.revokedSuffix : "") +
+          (reachedTarget ? s.reachedSuffix : "")
+        );
+      };
+
+      const run = (act: string) => {
+        if (act === "reset") {
+          state = initial();
+          paint(null);
+          say(str.status.initial as string);
+          return;
+        }
+        const result =
+          act === "teams"
+            ? makeTeams(state)
+            : (act === "join" ? join : act === "propose" ? propose : leave)(
+                state,
+                you,
+              );
+        state = result.state;
+        paint(
+          result.kind.startsWith("teams-") && result.kind !== "teams-locked"
+            ? "teams"
+            : HIGHLIGHT_SUMMARY.has(result.kind)
+              ? "summary"
+              : null,
+        );
+        say(message(result));
+      };
+
+      this.addEventListener("click", (event) => {
+        const act = (event.target as Element).closest("[data-act]");
+        if (act) run((act as HTMLElement).dataset.act as string);
+      });
+      for (const el of this.querySelectorAll("[hidden]")) el.removeAttribute("hidden");
+    }
+  }
+
+  customElements.define("partitelle-demo", PartitelleDemo);
+</script>
