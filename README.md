@@ -1,6 +1,6 @@
 # partitelle.github.io
 
-Landing site for **partitelle**, a project that helps friends organize casual team games: it collects who is in, keeps the list updated and builds the teams. Published with GitHub Pages at <https://partitelle.github.io>.
+Landing site for **partitelle**, a project that helps friends organize casual team games: it collects who is in, keeps the list updated and builds the teams. Published with GitHub Pages at <https://partitelle.com>; the old <https://partitelle.github.io> address redirects there.
 
 ## Stack
 
@@ -36,7 +36,7 @@ pnpm dev
 ## CI/CD
 
 - `.github/workflows/ci.yml` runs on pull requests and pushes to `main`: `lint` (Biome + astro check), `build` (uploads `dist`), `e2e` (needs `build`; uploads report and screenshots), `lighthouse` (needs `build`) and `semantic-pr-title` (pull requests only).
-- `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (and manually), then runs a smoke test on the live URL.
+- `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (and manually), then runs a smoke test on the live URL. The custom domain `partitelle.com` is set in the repository Pages settings, not with a `CNAME` file: with an Actions-based deploy a `CNAME` file is ignored.
 - Third-party actions are pinned to commit SHAs; Dependabot updates npm and actions weekly, grouping minor and patch bumps.
 
 ## Brand
