@@ -30,7 +30,7 @@ const demo = (page: Page) => {
     leave: section.getByRole("button", { name: "toglimi", exact: true }),
     make: section.getByRole("button", { name: "fai le squadre" }),
     reset: section.getByRole("button", { name: "ricomincia" }),
-    placeholder: section.getByText("qui escono le squadre, a sorte."),
+    placeholder: section.getByText("qui escono le squadre sorteggiate."),
   };
 };
 
@@ -86,7 +86,7 @@ test("aggiungimi fills slot 10 and unlocks the button", async ({ page }) => {
   await expect(d.rows.nth(9)).toHaveAttribute("data-changed", "");
   await expect(d.summary.locator("[data-changed]")).toHaveCount(1);
   await expect(d.make).toHaveAttribute("aria-disabled", "false");
-  await expect(d.hint).toHaveText("a sorte, cinque contro cinque");
+  await expect(d.hint).toHaveText("sorteggio, cinque contro cinque");
 });
 
 test("repeating aggiungimi is a no-op that re-announces and keeps one highlight", async ({
@@ -188,7 +188,7 @@ test("fai le squadre makes two teams of five with every name, tu highlighted onc
     d.teams.getByRole("list", { name: "squadra bianca" }),
   ).toHaveCount(1);
   await expect(d.status).toHaveText(
-    /^squadre fatte a sorte: sei nella squadra (nera|bianca)\.$/,
+    /^squadre sorteggiate: sei nella squadra (nera|bianca)\.$/,
   );
   // asking again shows the same teams
   const before = await d.teams.innerHTML();

@@ -31,15 +31,15 @@ test("both sections are named regions with the right heading outline", async ({
   await expect(h3).toHaveText([
     "aggiungi il bot al gruppo",
     "ognuno si segna con una parola",
-    "squadre a sorte",
+    "squadre sorteggiate",
   ]);
   await expect(h3).toHaveCount(3);
   await expect(
     page.locator("#cosa-fa").getByRole("heading", { level: 3 }),
   ).toHaveText([
     "una lista sola, sempre aggiornata",
-    "forse? il posto resta tuo",
-    "squadre a sorte, ritocchi con una riga",
+    "in forse? il posto resta tuo",
+    "squadre sorteggiate, ritocchi con una riga",
   ]);
   await expect(page.getByRole("heading", { level: 3 })).toHaveCount(6);
 });
