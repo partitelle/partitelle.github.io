@@ -40,6 +40,10 @@ pnpm dev
 - `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (and manually), then runs a smoke test on the live URL. The custom domain `partitelle.com` is set in the repository Pages settings, not with a `CNAME` file: with an Actions-based deploy a `CNAME` file is ignored.
 - Third-party actions are pinned to commit SHAs; Dependabot updates npm and actions weekly, grouping minor and patch bumps.
 
+## Privacy
+
+The privacy notice is published at https://partitelle.com/privacy (page `src/pages/privacy.astro`, copy in `src/i18n/it.ts`).
+
 ## Brand
 
 Brand tokens (colors, type) and motion variables live in `src/styles/global.css`. The logo SVGs the site serves live in `public/brand/` and `public/favicon.svg`; `brand/` keeps the app icons, the yellow logo mark and `og-image.svg`, the source of `public/og-image.png`. All user-facing strings live in `src/i18n/it.ts`.

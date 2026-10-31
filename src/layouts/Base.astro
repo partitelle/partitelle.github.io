@@ -5,17 +5,21 @@ import { it } from "../i18n/it";
 interface Props {
   title?: string;
   description?: string;
+  canonical?: string;
 }
 
-const { title = it.site.title, description = it.site.description } =
-  Astro.props;
-const canonical = "https://partitelle.com/";
-const ogImage = new URL("/og-image.png", Astro.site ?? canonical).href;
+const siteUrl = "https://partitelle.com/";
+const {
+  title = it.site.title,
+  description = it.site.description,
+  canonical = siteUrl,
+} = Astro.props;
+const ogImage = new URL("/og-image.png", Astro.site ?? siteUrl).href;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: it.site.name,
-  url: canonical,
+  url: siteUrl,
   inLanguage: "it",
   description,
 };

@@ -1,0 +1,83 @@
+---
+import Footer from "../components/Footer.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import { it, type Segment } from "../i18n/it";
+import Base from "../layouts/Base.astro";
+
+const p = it.privacy;
+const link = "underline underline-offset-4 hover:decoration-2";
+const first = "mt-4 text-base leading-relaxed lg:mt-6 lg:text-xl";
+const next = "mt-4 text-base leading-relaxed lg:text-xl";
+const heading = (i: number, title: string) => `${i + 1}. ${title}`;
+const segs = (list: readonly Segment[]) =>
+  list.map((s) => (typeof s === "string" ? { text: s, href: undefined } : s));
+---
+<Base title={p.meta.title} description={p.meta.description} canonical="https://partitelle.com/privacy/">
+  <div class="bg-yellow text-black">
+    <SiteHeader />
+  </div>
+  <main>
+    <section aria-labelledby="privacy-title" class="bg-yellow text-black">
+      <div class="mx-auto w-full max-w-7xl px-6 pb-12 pt-6 lg:px-12 lg:pb-16">
+        <h1 id="privacy-title" class="text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-[4rem]">{p.title}</h1>
+        <p class="mt-6 max-w-[34rem] text-xl leading-relaxed text-muted">{p.lead}</p>
+        <p class="mt-6 text-sm text-muted">{p.updatedLabel} <time datetime={p.updated.iso}>{p.updated.text}</time></p>
+      </div>
+    </section>
+    <div class="bg-white text-black">
+      <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:grid lg:grid-cols-12 lg:gap-12 lg:px-12 lg:py-24">
+        <nav aria-labelledby="privacy-index-label" class="rounded-panel bg-paper p-6 lg:col-span-3 lg:sticky lg:top-8 lg:self-start lg:max-h-[calc(100svh-4rem)] lg:overflow-y-auto">
+          <p id="privacy-index-label" class="text-base font-bold">{p.indexLabel}</p>
+          <ol role="list" class="mt-4 flex flex-col">
+            {
+              p.sections.map((section, i) => (
+                <li>
+                  <a href={`#${section.id}`} class="inline-flex min-h-8 items-center text-base no-underline underline-offset-4 hover:underline lg:text-sm">{heading(i, section.title)}</a>
+                </li>
+              ))
+            }
+          </ol>
+        </nav>
+        <article class="mt-12 max-w-prose break-words lg:col-span-9 lg:mt-0">
+          {
+            p.sections.map((section, i) => (
+              <section aria-labelledby={section.id} class="mt-12 border-t border-black/12 pt-12 first:mt-0 first:border-t-0 first:pt-0">
+                <h2 id={section.id} class="scroll-mt-8 text-2xl leading-[1.1] text-balance lg:text-4xl">{heading(i, section.title)}</h2>
+                {section.blocks.map((block, b) => {
+                  const cls = b === 0 ? first : next;
+                  if (block.type === "p") {
+                    return (
+                      <p class={cls}>
+                        {segs(block.segments).map((s) => (s.href ? <a href={s.href} class={link}>{s.text}</a> : s.text))}
+                      </p>
+                    );
+                  }
+                  if (block.type === "ul") {
+                    return (
+                      <ul class="mt-4 list-disc space-y-2 pl-6 text-base leading-relaxed marker:text-black lg:text-xl">
+                        {block.items.map((item) => (
+                          <li>{segs(item).map((s) => (s.href ? <a href={s.href} class={link}>{s.text}</a> : s.text))}</li>
+                        ))}
+                      </ul>
+                    );
+                  }
+                  return (
+                    <ol role="list" class="mt-4 space-y-4 text-base leading-relaxed lg:text-xl">
+                      {block.items.map((item) => (
+                        <li>
+                          <strong class="font-bold">{item.lead}</strong>
+                          {segs(item.segments).map((s) => (s.href ? <a href={s.href} class={link}>{s.text}</a> : s.text))}
+                        </li>
+                      ))}
+                    </ol>
+                  );
+                })}
+              </section>
+            ))
+          }
+        </article>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
