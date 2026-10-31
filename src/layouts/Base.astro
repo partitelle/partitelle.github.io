@@ -10,6 +10,7 @@ interface Props {
 const { title = it.site.title, description = it.site.description } =
   Astro.props;
 const canonical = "https://partitelle.github.io/";
+const ogImage = new URL("/og-image.png", Astro.site ?? canonical).href;
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -37,10 +38,16 @@ const jsonLd = {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <!-- TODO: og:image and twitter:image (1200x630 PNG exported from brand/og-image.svg) land in a later PR. -->
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content={it.site.ogImageAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={it.site.ogImageAlt} />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   </head>

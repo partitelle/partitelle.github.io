@@ -16,6 +16,31 @@ test("primary CTA points to the bot", async ({ page }) => {
   await expect(cta).toHaveAttribute("href", BOT_URL);
 });
 
+test("declares a valid social preview image", async ({ page, request }) => {
+  await page.goto("/");
+  const meta = (selector: string) =>
+    page.locator(selector).getAttribute("content");
+  const ogImage = await meta('meta[property="og:image"]');
+  const twitterImage = await meta('meta[name="twitter:image"]');
+  expect(ogImage).not.toBeNull();
+  expect(twitterImage).toBe(ogImage);
+  expect(ogImage).toMatch(/^https:\/\/partitelle\.github\.io\//);
+  expect(await meta('meta[property="og:image:width"]')).toBe("1200");
+  expect(await meta('meta[property="og:image:height"]')).toBe("630");
+  expect(await meta('meta[property="og:image:type"]')).toBe("image/png");
+  expect(await meta('meta[property="og:image:alt"]')).toBeTruthy();
+  expect(await meta('meta[name="twitter:image:alt"]')).toBeTruthy();
+
+  // Prod does not serve the image yet, so fetch the same path from the local server.
+  const response = await request.get(new URL(ogImage as string).pathname);
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toContain("image/png");
+  const body = await response.body();
+  expect(body.readUInt32BE(16)).toBe(1200);
+  expect(body.readUInt32BE(20)).toBe(630);
+  expect(body.length).toBeLessThan(300 * 1024);
+});
+
 test("has no axe violations", async ({ page }) => {
   await page.goto("/");
   const results = await new AxeBuilder({ page }).analyze();

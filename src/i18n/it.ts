@@ -6,6 +6,8 @@ export const it = {
       "partitelle raccoglie chi c'è, tiene la lista aggiornata e fa le squadre. tu pensa solo a giocare.",
     locale: "it_IT",
     markLabel: "partitelle",
+    ogImageAlt:
+      "logo di partitelle: fischietto nero e scritta partitelle su fondo giallo",
   },
   hero: {
     title: "la partita del mercoledì, senza il caos nel gruppo.",
