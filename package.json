@@ -11,6 +11,7 @@
     "check": "astro check",
     "lint": "biome ci .",
     "format": "biome format --write .",
+    "test:unit": "vitest run",
     "test:e2e": "playwright test",
     "lhci": "lhci autorun"
   },
@@ -27,6 +28,7 @@
     "@biomejs/biome": "^2.6.4",
     "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.64.1",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
   }
 }

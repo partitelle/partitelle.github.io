@@ -8,7 +8,7 @@ Landing site for **partitelle**, a project that helps friends organize casual te
 - [Tailwind CSS](https://tailwindcss.com) v4, CSS-first (`@theme` in `src/styles/global.css`), palette colors only
 - Outfit, self-hosted through [Fontsource](https://fontsource.org) (no third-party font requests)
 - [Biome](https://biomejs.dev) for lint and format, `astro check` for types
-- [Playwright](https://playwright.dev) + axe-core for e2e and accessibility, [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) for budgets
+- [Vitest](https://vitest.dev) for unit tests, [Playwright](https://playwright.dev) + axe-core for e2e and accessibility, [Lighthouse CI](https://github.com/GoogleChrome/lighthouse-ci) for budgets
 - pnpm (via corepack), Node 24 (`.nvmrc`)
 - No UI framework: vanilla TypeScript only, where JS is needed
 
@@ -22,20 +22,21 @@ pnpm dev
 
 ## Scripts
 
-| Script          | What it does                                                            |
-| --------------- | ----------------------------------------------------------------------- |
-| `pnpm dev`      | Astro dev server                                                        |
-| `pnpm build`    | Static build into `dist/`                                               |
-| `pnpm preview`  | Serve `dist/`                                                           |
-| `pnpm check`    | `astro check` (types)                                                   |
-| `pnpm lint`     | `biome ci .`                                                            |
-| `pnpm format`   | Format with Biome                                                       |
-| `pnpm test:e2e` | Playwright tests against the built site (run `pnpm build` first)        |
-| `pnpm lhci`     | Lighthouse CI on `dist/` (needs Chrome; set `CHROME_PATH` if not found) |
+| Script           | What it does                                                            |
+| ---------------- | ----------------------------------------------------------------------- |
+| `pnpm dev`       | Astro dev server                                                        |
+| `pnpm build`     | Static build into `dist/`                                               |
+| `pnpm preview`   | Serve `dist/`                                                           |
+| `pnpm check`     | `astro check` (types)                                                   |
+| `pnpm lint`      | `biome ci .`                                                            |
+| `pnpm format`    | Format with Biome                                                       |
+| `pnpm test:unit` | Vitest unit tests (`src/**/*.test.ts`)                                  |
+| `pnpm test:e2e`  | Playwright tests against the built site (run `pnpm build` first)        |
+| `pnpm lhci`      | Lighthouse CI on `dist/` (needs Chrome; set `CHROME_PATH` if not found) |
 
 ## CI/CD
 
-- `.github/workflows/ci.yml` runs on pull requests and pushes to `main`: `lint` (Biome + astro check), `build` (uploads `dist`), `e2e` (needs `build`; uploads report and screenshots), `lighthouse` (needs `build`) and `semantic-pr-title` (pull requests only).
+- `.github/workflows/ci.yml` runs on pull requests and pushes to `main`: `lint` (Biome + astro check), `unit-test` (Vitest), `build` (uploads `dist`), `e2e` (needs `build`; uploads report and screenshots), `lighthouse` (needs `build`) and `semantic-pr-title` (pull requests only).
 - `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (and manually), then runs a smoke test on the live URL. The custom domain `partitelle.com` is set in the repository Pages settings, not with a `CNAME` file: with an Actions-based deploy a `CNAME` file is ignored.
 - Third-party actions are pinned to commit SHAs; Dependabot updates npm and actions weekly, grouping minor and patch bumps.
 
