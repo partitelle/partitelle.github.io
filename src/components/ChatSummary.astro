@@ -62,7 +62,7 @@ if (hidden > 0) rows.push({ state: "more", count: hidden });
 >
   <figcaption class="sr-only">{label}</figcaption>
   <div class="flex items-start gap-3">
-    <MarkStatic class:list={["shrink-0 text-black", compact ? "size-5" : "size-6"]} />
+    <MarkStatic class:list={["mt-0.5 shrink-0 text-black", compact ? "size-5" : "size-6"]} />
     <div class="min-w-0 flex-1">
       <p class:list={["font-bold", compact ? "text-base" : "text-xl"]}>{day}<span aria-hidden="true"> · </span>{time}</p>
       {
@@ -80,7 +80,7 @@ if (hidden > 0) rows.push({ state: "more", count: hidden });
     </div>
     <p class="rounded-pill bg-black px-3 py-1 text-sm font-bold text-white tabular-nums">
       <span aria-hidden="true">{taken}/{target}</span>
-      <span class="sr-only">{it.panels.counterSr.replace("{n}", String(taken)).replace("{target}", String(target))}</span>
+      <span class="sr-only">{(taken === 1 ? it.panels.counterSrOne : it.panels.counterSr).replace("{n}", String(taken)).replace("{target}", String(target))}</span>
     </p>
   </div>
   <ol role="list" aria-label={it.panels.listLabel} class="mt-4 divide-y divide-black/12 border-t border-black/12">
@@ -96,7 +96,7 @@ if (hidden > 0) rows.push({ state: "more", count: hidden });
         if (row.state === "more") {
           return (
             <li data-state="more" class:list={rowClass}>
-              <span class="text-sm text-muted">{it.panels.more.replace("{n}", String(row.count))}</span>
+              <span class="text-sm text-muted">{(row.count === 1 ? it.panels.moreOne : it.panels.more).replace("{n}", String(row.count))}</span>
             </li>
           );
         }
@@ -104,14 +104,14 @@ if (hidden > 0) rows.push({ state: "more", count: hidden });
           return (
             <li data-state="empty" class:list={rowClass}>
               <span aria-hidden="true" class="w-6 text-sm text-muted tabular-nums">{row.slot}</span>
-              <span class="text-base text-muted">{it.panels.emptySlot}</span>
+              <span class={compact ? "text-sm text-muted" : "text-base text-muted"}>{it.panels.emptySlot}</span>
             </li>
           );
         }
         return (
           <li data-state={row.state} data-changed={row.changed ? "" : undefined} class:list={rowClass}>
             <span aria-hidden="true" class="w-6 text-sm text-muted tabular-nums">{row.slot}</span>
-            <span class="text-base">{row.name}</span>
+            <span class={compact ? "text-sm" : "text-base"}>{row.name}</span>
             {row.state === "maybe" && (
               <span class="ml-auto rounded-pill border border-black/12 px-3 text-sm text-muted">{it.panels.maybe}</span>
             )}

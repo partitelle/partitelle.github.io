@@ -76,6 +76,8 @@ export const it = {
     maybe: "forse",
     emptySlot: "posto libero",
     more: "e altri {n} posti",
+    counterSrOne: "1 posto preso su {target}",
+    moreOne: "e altro 1 posto",
     counterSr: "{n} posti presi su {target}",
     teamBlack: "squadra nera",
     teamWhite: "squadra bianca",

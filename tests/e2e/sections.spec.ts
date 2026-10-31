@@ -65,7 +65,7 @@ test("step 1 summary shows one player and nine free slots", async ({
   await expect(summary.locator("[data-state='in']")).toHaveCount(1);
   await expect(summary.locator("[data-state='empty']")).toHaveCount(9);
   await expect(
-    summary.getByText("1 posti presi su 10", { exact: true }),
+    summary.getByText("1 posto preso su 10", { exact: true }),
   ).toHaveCount(1);
 });
 
@@ -164,4 +164,15 @@ test("no horizontal scroll", async ({ page }) => {
     () => document.documentElement.scrollWidth - window.innerWidth,
   );
   expect(overflow).toBeLessThanOrEqual(0);
+});
+
+test.describe("narrow viewport", () => {
+  test.use({ viewport: { width: 320, height: 800 } });
+
+  test("no horizontal scroll at 320", async ({ page }) => {
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - window.innerWidth,
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
 });
