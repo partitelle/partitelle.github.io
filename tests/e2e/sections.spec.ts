@@ -1,7 +1,9 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-const SECTIONS = ["#problema", "#come-funziona"] as const;
+const BOT_URL = "https://t.me/PartitelleBot?startgroup=true";
+
+const SECTIONS = ["#problema", "#come-funziona", "#cosa-fa"] as const;
 
 test.beforeEach(async ({ page }) => {
   await page.goto("/");
@@ -18,14 +20,64 @@ test("both sections are named regions with the right heading outline", async ({
     page.getByRole("region", { name: "come funziona" }),
   ).toHaveAttribute("id", "come-funziona");
   const h2 = page.getByRole("heading", { level: 2 });
-  await expect(h2).toHaveText(["il problema", "come funziona", "provalo"]);
+  await expect(h2).toHaveText([
+    "il problema",
+    "come funziona",
+    "provalo",
+    "cosa fa",
+    "mercoledì si gioca. al resto pensa il bot.",
+  ]);
   const h3 = page.locator("#come-funziona").getByRole("heading", { level: 3 });
   await expect(h3).toHaveText([
     "aggiungi il bot al gruppo",
     "ognuno si segna con una parola",
-    "squadre a sorte e promemoria",
+    "squadre a sorte",
   ]);
-  await expect(page.getByRole("heading", { level: 3 })).toHaveCount(3);
+  await expect(h3).toHaveCount(3);
+  await expect(
+    page.locator("#cosa-fa").getByRole("heading", { level: 3 }),
+  ).toHaveText([
+    "una lista sola, sempre aggiornata",
+    "forse? il posto resta tuo",
+    "squadre a sorte, ritocchi con una riga",
+  ]);
+  await expect(page.getByRole("heading", { level: 3 })).toHaveCount(6);
+});
+
+test("features section has three tiles and the compact summary", async ({
+  page,
+}) => {
+  await expect(page.getByRole("region", { name: "cosa fa" })).toHaveAttribute(
+    "id",
+    "cosa-fa",
+  );
+  await expect(page.locator("#cosa-fa ul > li")).toHaveCount(3);
+  const summary = page.locator("#cosa-fa figure");
+  await expect(summary).toHaveCount(1);
+  await expect(summary.locator("ol > li")).toHaveCount(6);
+  await expect(summary.locator("[data-state='in']")).toHaveCount(4);
+  await expect(summary.locator("[data-state='maybe']")).toHaveCount(1);
+  await expect(summary.locator("[data-state='more']")).toHaveText(
+    "e altri 5 posti",
+  );
+  await expect(summary.getByText("6/10")).toBeVisible();
+  await expect(summary.locator("[data-changed]")).toHaveCount(0);
+});
+
+test("final call to action is one link to the bot", async ({ page }) => {
+  const section = page.locator("#gioca");
+  await expect(
+    page.getByRole("region", {
+      name: "mercoledì si gioca. al resto pensa il bot.",
+    }),
+  ).toHaveAttribute("id", "gioca");
+  await expect(section.getByRole("link")).toHaveCount(1);
+  await expect(section.locator(".cta")).toHaveCount(1);
+  await expect(section.locator(".cta")).toHaveAttribute("href", BOT_URL);
+  await expect(section.locator(".cta")).toHaveText("Aggiungi il bot al gruppo");
+  await expect(
+    section.getByText("oggi su Telegram, domani non solo", { exact: true }),
+  ).toBeVisible();
 });
 
 test("problem section has the three lines", async ({ page }) => {

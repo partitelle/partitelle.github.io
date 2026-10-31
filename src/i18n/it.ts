@@ -51,8 +51,8 @@ export const it = {
           "esempio di riepilogo: 9 posti presi su 10, di cui 2 in forse.",
       },
       {
-        title: "squadre a sorte e promemoria",
-        body: "quando tutti e dieci hanno confermato, il bot fa le squadre a sorte. dopo la partita ricorda a chi non ha ancora pagato la quota.",
+        title: "squadre a sorte",
+        body: "quando tutti e dieci hanno confermato, il bot fa le squadre a sorte: nera e bianca, cinque contro cinque.",
         panelLabel:
           "esempio di squadre: squadra nera e squadra bianca, cinque contro cinque.",
       },
@@ -134,6 +134,32 @@ export const it = {
       "davide",
       "irene",
     ],
+  },
+  features: {
+    title: "cosa fa",
+    line: "meno messaggi, più partita.",
+    summaryLabel:
+      "esempio di riepilogo: mercoledì alle 20:00, campo 2, 6 posti presi su 10, di cui 1 in forse.",
+    items: [
+      {
+        title: "una lista sola, sempre aggiornata",
+        body: "il bot scrive il riepilogo una volta e poi lo aggiorna nello stesso messaggio. giorno, ora, posti e campo li cambi quando vuoi.",
+      },
+      {
+        title: "forse? il posto resta tuo",
+        body: "nel dubbio ti segni in forse: tieni il posto, ma per le squadre contano solo le conferme.",
+        keyword: "proponimi",
+      },
+      {
+        title: "squadre a sorte, ritocchi con una riga",
+        body: "con tutte le conferme chiedi le squadre: nera e bianca, fatte a sorte. per cambiare due nomi basta scriverlo.",
+        keyword: "scambia luca con sara",
+      },
+    ],
+  },
+  finalCta: {
+    title: ["mercoledì si gioca.", "al resto pensa il bot."],
+    availability: "oggi su Telegram, domani non solo",
   },
   footer: {
     tagline: "fatto da chi organizza la partita del mercoledì",

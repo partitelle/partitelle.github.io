@@ -13,8 +13,10 @@ test("renders the h1", async ({ page }) => {
 
 test("primary CTA points to the bot", async ({ page }) => {
   await page.goto("/");
-  const cta = page.getByRole("link", { name: "Aggiungi il bot al gruppo" });
-  await expect(cta).toHaveAttribute("href", BOT_URL);
+  const ctas = page.getByRole("link", { name: "Aggiungi il bot al gruppo" });
+  await expect(ctas).toHaveCount(2);
+  await expect(ctas.nth(0)).toHaveAttribute("href", BOT_URL);
+  await expect(ctas.nth(1)).toHaveAttribute("href", BOT_URL);
 });
 
 test("declares a valid social preview image", async ({ page, request }) => {
@@ -233,18 +235,64 @@ test.describe("reduced motion", () => {
   test("cta pills do not move", async ({ page }) => {
     await page.goto("/");
     const ctas = page.locator(".cta");
-    await expect(ctas).toHaveCount(2);
+    await expect(ctas).toHaveCount(3);
     const durations = await ctas.evaluateAll((els) =>
       els.map((el) => getComputedStyle(el).transitionDuration),
     );
-    expect(durations).toEqual(["0s", "0s"]);
-    const primary = page.getByRole("link", {
-      name: "Aggiungi il bot al gruppo",
-    });
-    await primary.hover();
-    const transform = await primary.evaluate(
-      (el) => getComputedStyle(el).transform,
-    );
-    expect(transform).toBe("none");
+    expect(durations).toEqual(["0s", "0s", "0s"]);
+    const buttons = [
+      page
+        .getByRole("region", { name: "la partita del mercoledì" })
+        .getByRole("link", { name: "Aggiungi il bot al gruppo" }),
+      page
+        .locator("#gioca")
+        .getByRole("link", { name: "Aggiungi il bot al gruppo" }),
+    ];
+    for (const button of buttons) {
+      await button.hover();
+      const transform = await button.evaluate(
+        (el) => getComputedStyle(el).transform,
+      );
+      expect(transform).toBe("none");
+    }
   });
+});
+
+test.describe("hero height and whistle size", () => {
+  const hero = (page: Page) => page.locator("main > section").first();
+
+  test("below 1024 px the hero is as tall as its content and the whistle is 112 px", async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("/");
+    const minHeight = await hero(page).evaluate(
+      (el) => getComputedStyle(el).minHeight,
+    );
+    expect(["auto", "0px"]).toContain(minHeight);
+    const width = await page
+      .locator(MARK)
+      .evaluate((el) => el.getBoundingClientRect().width);
+    expect(width).toBe(112);
+    await page.setViewportSize({ width: 1023, height: 800 });
+    const narrow = await hero(page).evaluate(
+      (el) => getComputedStyle(el).minHeight,
+    );
+    expect(["auto", "0px"]).toContain(narrow);
+  });
+
+  test("from 1024 px the hero fills the viewport", async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 800 });
+    await page.goto("/");
+    const minHeight = await hero(page).evaluate(
+      (el) => getComputedStyle(el).minHeight,
+    );
+    expect(minHeight).toBe("800px");
+  });
+});
+
+test("the page never mentions the payment reminder", async ({ page }) => {
+  await page.goto("/");
+  const html = await page.content();
+  expect(html).not.toMatch(/quota|pagat|promemoria/i);
 });

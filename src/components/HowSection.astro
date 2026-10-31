@@ -1,5 +1,6 @@
 ---
 import { it } from "../i18n/it";
+import { chip } from "../lib/classes";
 import ChatSummary from "./ChatSummary.astro";
 import SectionLabel from "./SectionLabel.astro";
 import Teams from "./Teams.astro";
@@ -46,7 +47,7 @@ const panelClass = "mt-8 lg:col-span-6 lg:col-start-7 lg:mt-0";
             {
               it.how.keywords.map((keyword) => (
                 <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <dt class="inline-flex rounded-pill border border-black/12 bg-white px-4 py-1 text-base font-medium">{keyword.word}</dt>
+                  <dt class={chip}>{keyword.word}</dt>
                   <dd class="text-base text-muted">{keyword.meaning}</dd>
                 </div>
               ))
