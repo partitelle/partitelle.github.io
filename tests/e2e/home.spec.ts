@@ -1,5 +1,5 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
 
 const BOT_URL = "https://t.me/PartitelleBot?startgroup=true";
 
@@ -22,8 +22,33 @@ test("has no axe violations", async ({ page }) => {
   expect(results.violations).toEqual([]);
 });
 
+const MARK = "[data-whistle]";
+
+// Snapshot of every animation on the mark: name, state, and how long it still
+// runs from now (end time minus current time, in ms).
+async function markAnimations(page: Page) {
+  return page.locator(MARK).evaluate((mark) =>
+    mark.getAnimations({ subtree: true }).map((a) => ({
+      name: (a as CSSAnimation).animationName,
+      state: a.playState,
+      remaining:
+        Number(a.effect?.getComputedTiming().endTime ?? 0) -
+        Number(a.currentTime ?? 0),
+    })),
+  );
+}
+
+// Fast-forwards the load motion (intro plus the automatic whistle).
+async function finishLoadMotion(page: Page) {
+  return page.locator(MARK).evaluate((mark) => {
+    const animations = mark.getAnimations({ subtree: true });
+    for (const a of animations) a.finish();
+    return animations.length;
+  });
+}
+
 test.describe("default motion", () => {
-  test("rays run the intro then three blasts, and the svg does not clip", async ({
+  test("rays run the intro then one whistle, all within 5s, and the svg does not clip", async ({
     page,
   }) => {
     await page.goto("/");
@@ -40,8 +65,18 @@ test.describe("default motion", () => {
     );
     for (const style of styles) {
       expect(style.name).toBe("whistle-ray, whistle-blow");
-      expect(style.count).toBe("1, 3");
+      expect(style.count).toBe("1, 1");
     }
+    // Total automatic motion, measured from page load: the latest end time.
+    const ends = await page
+      .locator(MARK)
+      .evaluate((mark) =>
+        mark
+          .getAnimations({ subtree: true })
+          .map((a) => Number(a.effect?.getComputedTiming().endTime ?? 0)),
+      );
+    expect(ends).toHaveLength(6);
+    expect(Math.max(...ends)).toBeLessThanOrEqual(5000);
     const overflow = await page
       .getByRole("img", { name: "partitelle" })
       .first()
@@ -53,12 +88,9 @@ test.describe("default motion", () => {
     await page.goto("/");
     const rays = page.locator(".whistle-ray");
     await expect(rays).toHaveCount(3);
-    const running = await page.evaluate(() => {
-      const animations = document.getAnimations();
-      for (const anim of animations) anim.finish();
-      return animations.length;
-    });
-    expect(running).toBe(6);
+    expect(await finishLoadMotion(page)).toBe(6);
+    const states = await markAnimations(page);
+    expect(states.map((a) => a.state)).toEqual(Array(6).fill("finished"));
     const end = await rays.evaluateAll((els) =>
       els.map((el) => {
         const cs = getComputedStyle(el);
@@ -72,12 +104,63 @@ test.describe("default motion", () => {
       })),
     );
   });
+
+  test("hovering the still mark replays one whistle under 1s, without restarting mid-cycle", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await expect(page.locator(".whistle-ray")).toHaveCount(3);
+    await finishLoadMotion(page);
+    const mark = page.locator(MARK);
+    await mark.hover();
+    const replay = await markAnimations(page);
+    const blows = replay.filter((a) => a.name === "whistle-blow");
+    expect(blows.map((a) => a.state)).toEqual(Array(3).fill("running"));
+    expect(Math.max(...blows.map((a) => a.remaining))).toBeLessThan(1000);
+    expect(
+      replay.filter((a) => a.name === "whistle-ray").map((a) => a.state),
+    ).toEqual(Array(3).fill("finished"));
+
+    // Jump 300ms into the whistle, then leave and come back mid-cycle: the
+    // running whistle keeps going instead of being rewound.
+    await mark.evaluate((el) => {
+      for (const a of el.getAnimations({ subtree: true })) {
+        if ((a as CSSAnimation).animationName === "whistle-blow") {
+          a.currentTime = Number(a.currentTime) + 300;
+        }
+      }
+    });
+    await page.mouse.move(0, 0);
+    await mark.hover();
+    const again = (await markAnimations(page)).filter(
+      (a) => a.name === "whistle-blow",
+    );
+    expect(again.map((a) => a.state)).toEqual(Array(3).fill("running"));
+    expect(Math.max(...again.map((a) => a.remaining))).toBeLessThan(
+      Math.max(...blows.map((a) => a.remaining)) - 250,
+    );
+  });
+
+  test("tapping the still mark replays one whistle", async ({
+    page,
+  }, testInfo) => {
+    test.skip(!testInfo.project.use.hasTouch, "needs a touch device");
+    await page.goto("/");
+    await expect(page.locator(".whistle-ray")).toHaveCount(3);
+    await finishLoadMotion(page);
+    await page.locator(MARK).tap();
+    const blows = (await markAnimations(page)).filter(
+      (a) => a.name === "whistle-blow",
+    );
+    expect(blows.map((a) => a.state)).toEqual(Array(3).fill("running"));
+    expect(Math.max(...blows.map((a) => a.remaining))).toBeLessThan(1000);
+  });
 });
 
 test.describe("reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 
-  test("rays have no running animation", async ({ page }) => {
+  test("rays have no animation, even on hover", async ({ page }) => {
     await page.goto("/");
     const rays = page.locator(".whistle-ray");
     await expect(rays).toHaveCount(3);
@@ -85,10 +168,13 @@ test.describe("reduced motion", () => {
       els.map((el) => getComputedStyle(el).animationName),
     );
     expect(names).toEqual(["none", "none", "none"]);
-    const animations = await page.evaluate(
-      () => document.getAnimations().length,
+    expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
+    await page.locator(MARK).hover();
+    expect(await page.evaluate(() => document.getAnimations().length)).toBe(0);
+    const rest = await rays.evaluateAll((els) =>
+      els.map((el) => getComputedStyle(el).opacity),
     );
-    expect(animations).toBe(0);
+    expect(rest).toEqual(["1", "1", "1"]);
   });
 
   test("cta pills do not move", async ({ page }) => {

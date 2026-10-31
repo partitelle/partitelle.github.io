@@ -54,17 +54,17 @@
 }
 
 /* Landing motion (spec: brand/BRAND.md, "Movimento"). Only transform and
-   opacity move. The three rays of the whistle appear in turn once (intro),
-   then blow a short blast three times with long rests, then stay still.
-   Rays are visible by default, and with reduced motion the mark is static
-   and the call-to-action pills do not move. */
+   opacity move. The three rays of the whistle appear in turn (intro), then
+   blow one short whistle, then stay still: all automatic motion ends in
+   about 2s, well under 5s. Hovering, tapping or focusing the mark replays
+   one whistle (under 1s, see WhistleMark.astro). Rays are visible by
+   default, and with reduced motion nothing moves. */
 :root {
   --whistle-intro: 200ms;
   --whistle-intro-stagger: 200ms;
-  --whistle-loop-delay: 2400ms;
-  --whistle-cycle: 5600ms;
-  --whistle-loop-stagger: 90ms;
-  --whistle-loops: 3;
+  --whistle-delay: 1200ms;
+  --whistle-blow: 760ms;
+  --whistle-blow-stagger: 70ms;
   --whistle-reach: 8px;
   --ease-blast: cubic-bezier(0.2, 0.9, 0.3, 1);
   --ease-settle: cubic-bezier(0.3, 0, 0.2, 1);
@@ -89,14 +89,14 @@
   }
 }
 
-/* One blast per cycle: 840ms of 5600ms (pct = ms / cycle). */
+/* One whistle: pull back toward the slot, push out along the ray, settle. */
 @keyframes whistle-blow {
   0% {
     opacity: 1;
     transform: none;
     animation-timing-function: var(--ease-wind);
   }
-  3% {
+  20% {
     opacity: 0.8;
     transform: translate(
         calc(var(--ray-ux) * var(--whistle-reach) * -0.35),
@@ -105,7 +105,7 @@
       scale(0.92);
     animation-timing-function: var(--ease-blast);
   }
-  8% {
+  53% {
     opacity: 1;
     transform: translate(
         calc(var(--ray-ux) * var(--whistle-reach)),
@@ -114,21 +114,22 @@
       scale(1.06);
     animation-timing-function: var(--ease-settle);
   }
-  15%,
   100% {
     opacity: 1;
     transform: none;
   }
 }
 
+/* The whistle keeps its forward fill (the rest pose) so the replay script
+   can rewind it; it has no backward fill, so it never hides the intro. */
 .whistle-ray {
   transform-box: fill-box;
   animation:
-    whistle-ray var(--whistle-intro) ease-out both,
-    whistle-blow var(--whistle-cycle) linear var(--whistle-loops);
+    whistle-ray var(--whistle-intro) ease-out 1 both,
+    whistle-blow var(--whistle-blow) linear 1 forwards;
   animation-delay:
     calc(var(--i) * var(--whistle-intro-stagger)),
-    calc(var(--whistle-loop-delay) + var(--i) * var(--whistle-loop-stagger));
+    calc(var(--whistle-delay) + var(--i) * var(--whistle-blow-stagger));
 }
 
 .whistle-ray-1 {

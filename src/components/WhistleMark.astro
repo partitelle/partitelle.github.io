@@ -13,6 +13,7 @@ const { label, class: className } = Astro.props;
   role="img"
   aria-label={label}
   class={className}
+  data-whistle
 >
   <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="22">
     <path class="whistle-ray whistle-ray-1" d="M196 150 178 116" />
@@ -25,3 +26,35 @@ const { label, class: className } = Astro.props;
     fill="currentColor"
   />
 </svg>
+
+<script>
+  // Replays one whistle (under 1s) when the mark is hovered, tapped (a tap
+  // fires pointerenter too) or focused, if it is focusable or inside a link
+  // or button. Timings stay in CSS: this only rewinds the finished CSS
+  // "whistle-blow" animations. It does nothing while any ray still moves, so
+  // a whistle never restarts mid-cycle, and nothing under reduced motion
+  // (there are no animations to rewind).
+  for (const mark of document.querySelectorAll<SVGSVGElement>(
+    "[data-whistle]",
+  )) {
+    const whistle = () => {
+      const animations = mark.getAnimations({ subtree: true });
+      if (animations.some((a) => a.playState === "running")) return;
+      const blows = animations.filter(
+        (a) => (a as CSSAnimation).animationName === "whistle-blow",
+      );
+      if (blows.length === 0) return;
+      const start = Math.min(
+        ...blows.map((a) => Number(a.effect?.getTiming().delay ?? 0)),
+      );
+      for (const blow of blows) {
+        blow.currentTime = start;
+        blow.play();
+      }
+    };
+    mark.addEventListener("pointerenter", whistle);
+    mark
+      .closest("a, button, [tabindex]")
+      ?.addEventListener("focusin", whistle);
+  }
+</script>
