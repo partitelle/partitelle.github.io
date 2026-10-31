@@ -53,13 +53,35 @@
   }
 }
 
-/* The one animation: the three sound rays of the whistle appear in turn,
-   once, in about 600ms. Rays are visible by default, so reduced motion
-   and no-animation contexts show the static mark. */
+/* Landing motion (spec: brand/BRAND.md, "Movimento"). Only transform and
+   opacity move. The three rays of the whistle appear in turn (intro), then
+   blow one short whistle, then stay still: all automatic motion ends in
+   about 2s, well under 5s. Hovering, tapping or focusing the mark replays
+   one whistle (under 1s, see WhistleMark.astro). Rays are visible by
+   default, and with reduced motion nothing moves. */
+:root {
+  --whistle-intro: 200ms;
+  --whistle-intro-stagger: 200ms;
+  --whistle-delay: 1200ms;
+  --whistle-blow: 760ms;
+  --whistle-blow-stagger: 70ms;
+  --whistle-reach: 8px;
+  --ease-blast: cubic-bezier(0.2, 0.9, 0.3, 1);
+  --ease-settle: cubic-bezier(0.3, 0, 0.2, 1);
+  --ease-wind: cubic-bezier(0.4, 0, 0.6, 1);
+  --cta-duration: 160ms;
+  --cta-press-duration: 80ms;
+  --cta-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
 @keyframes whistle-ray {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.6);
+    transform: translate(
+        calc(var(--ray-ux) * var(--whistle-reach) * -1.25),
+        calc(var(--ray-uy) * var(--whistle-reach) * -1.25)
+      )
+      scale(0.6);
   }
   to {
     opacity: 1;
@@ -67,26 +89,99 @@
   }
 }
 
+/* One whistle: pull back toward the slot, push out along the ray, settle. */
+@keyframes whistle-blow {
+  0% {
+    opacity: 1;
+    transform: none;
+    animation-timing-function: var(--ease-wind);
+  }
+  20% {
+    opacity: 0.8;
+    transform: translate(
+        calc(var(--ray-ux) * var(--whistle-reach) * -0.35),
+        calc(var(--ray-uy) * var(--whistle-reach) * -0.35)
+      )
+      scale(0.92);
+    animation-timing-function: var(--ease-blast);
+  }
+  53% {
+    opacity: 1;
+    transform: translate(
+        calc(var(--ray-ux) * var(--whistle-reach)),
+        calc(var(--ray-uy) * var(--whistle-reach))
+      )
+      scale(1.06);
+    animation-timing-function: var(--ease-settle);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The whistle keeps its forward fill (the rest pose) so the replay script
+   can rewind it; it has no backward fill, so it never hides the intro. */
 .whistle-ray {
   transform-box: fill-box;
-  transform-origin: 50% 100%;
-  animation: whistle-ray 200ms ease-out both;
+  animation:
+    whistle-ray var(--whistle-intro) ease-out 1 both,
+    whistle-blow var(--whistle-blow) linear 1 forwards;
+  animation-delay:
+    calc(var(--i) * var(--whistle-intro-stagger)),
+    calc(var(--whistle-delay) + var(--i) * var(--whistle-blow-stagger));
 }
 
 .whistle-ray-1 {
-  animation-delay: 0ms;
+  --i: 0;
+  --ray-ux: -0.468;
+  --ray-uy: -0.884;
+  transform-origin: 100% 100%;
 }
 
 .whistle-ray-2 {
-  animation-delay: 200ms;
+  --i: 1;
+  --ray-ux: 0;
+  --ray-uy: -1;
+  transform-origin: 50% 100%;
 }
 
 .whistle-ray-3 {
-  animation-delay: 400ms;
+  --i: 2;
+  --ray-ux: 0.468;
+  --ray-uy: -0.884;
+  transform-origin: 0% 100%;
+}
+
+.cta {
+  transition: transform var(--cta-duration) var(--cta-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .cta:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.cta:focus-visible {
+  transform: translateY(-2px);
+}
+
+.cta:active {
+  transform: translateY(0) scale(0.97);
+  transition-duration: var(--cta-press-duration);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .whistle-ray {
     animation: none;
+  }
+
+  .cta,
+  .cta:hover,
+  .cta:focus-visible,
+  .cta:active {
+    transition: none;
+    transform: none;
   }
 }
