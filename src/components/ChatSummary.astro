@@ -1,0 +1,123 @@
+---
+import { it } from "../i18n/it";
+import MarkStatic from "./MarkStatic.astro";
+
+interface Player {
+  name: string;
+  status: "in" | "maybe";
+  changed?: boolean;
+}
+
+interface Props {
+  label: string;
+  day?: string;
+  time?: string;
+  place?: string | null;
+  target?: number;
+  players?: Player[];
+  size?: "default" | "compact";
+  visibleSlots?: number;
+}
+
+const {
+  label,
+  day = it.panels.day,
+  time = it.panels.time,
+  place = it.panels.place,
+  target = 10,
+  players = [],
+  size = "default",
+  visibleSlots = target,
+} = Astro.props;
+
+const compact = size === "compact";
+const taken = players.length;
+const shown = Math.min(visibleSlots, target);
+const hidden = target - shown;
+const placeParts = place ? place.split("·").map((part) => part.trim()) : [];
+
+type Row =
+  | { state: "in" | "maybe"; slot: number; name: string; changed: boolean }
+  | { state: "empty"; slot: number }
+  | { state: "more"; count: number };
+
+const rows: Row[] = Array.from({ length: shown }, (_, i): Row => {
+  const player = players[i];
+  return player
+    ? {
+        state: player.status,
+        slot: i + 1,
+        name: player.name,
+        changed: Boolean(player.changed),
+      }
+    : { state: "empty", slot: i + 1 };
+});
+if (hidden > 0) rows.push({ state: "more", count: hidden });
+---
+<figure
+  class:list={[
+    "w-full max-w-md rounded-panel border border-black/12 bg-white text-black",
+    compact ? "p-4" : "p-4 sm:p-6",
+  ]}
+>
+  <figcaption class="sr-only">{label}</figcaption>
+  <div class="flex items-start gap-3">
+    <MarkStatic class:list={["shrink-0 text-black", compact ? "size-5" : "size-6"]} />
+    <div class="min-w-0 flex-1">
+      <p class:list={["font-bold", compact ? "text-base" : "text-xl"]}>{day}<span aria-hidden="true"> · </span>{time}</p>
+      {
+        placeParts.length > 0 && (
+          <p class="text-sm text-muted">
+            {placeParts.map((part, i) => (
+              <>
+                {i > 0 && <span aria-hidden="true"> · </span>}
+                {part}
+              </>
+            ))}
+          </p>
+        )
+      }
+    </div>
+    <p class="rounded-pill bg-black px-3 py-1 text-sm font-bold text-white tabular-nums">
+      <span aria-hidden="true">{taken}/{target}</span>
+      <span class="sr-only">{it.panels.counterSr.replace("{n}", String(taken)).replace("{target}", String(target))}</span>
+    </p>
+  </div>
+  <ol role="list" aria-label={it.panels.listLabel} class="mt-4 divide-y divide-black/12 border-t border-black/12">
+    {
+      rows.map((row) => {
+        const rowClass = [
+          "flex items-center gap-3",
+          compact ? "min-h-8 py-1 text-sm" : "min-h-10 py-2",
+          row.state !== "empty" && row.state !== "more" && row.changed
+            ? "-mx-3 rounded-pill bg-yellow px-3"
+            : "",
+        ];
+        if (row.state === "more") {
+          return (
+            <li data-state="more" class:list={rowClass}>
+              <span class="text-sm text-muted">{it.panels.more.replace("{n}", String(row.count))}</span>
+            </li>
+          );
+        }
+        if (row.state === "empty") {
+          return (
+            <li data-state="empty" class:list={rowClass}>
+              <span aria-hidden="true" class="w-6 text-sm text-muted tabular-nums">{row.slot}</span>
+              <span class="text-base text-muted">{it.panels.emptySlot}</span>
+            </li>
+          );
+        }
+        return (
+          <li data-state={row.state} data-changed={row.changed ? "" : undefined} class:list={rowClass}>
+            <span aria-hidden="true" class="w-6 text-sm text-muted tabular-nums">{row.slot}</span>
+            <span class="text-base">{row.name}</span>
+            {row.state === "maybe" && (
+              <span class="ml-auto rounded-pill border border-black/12 px-3 text-sm text-muted">{it.panels.maybe}</span>
+            )}
+          </li>
+        );
+      })
+    }
+  </ol>
+</figure>
