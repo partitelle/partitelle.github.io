@@ -1,8 +1,12 @@
-# partitelle.github.io
+<p align="center">
+  <img src="brand/app-icon.svg" alt="partitelle logo" width="160">
+</p>
+<h1 align="center">partitelle.github.io</h1>
+<p align="center">the source of <a href="https://partitelle.com">partitelle.com</a>, the website of partitelle.</p>
 
 Landing site for **partitelle**, a project that helps friends organize casual team games: it collects who is in, keeps the list updated and builds the teams. Published with GitHub Pages at <https://partitelle.com>; the old <https://partitelle.github.io> address redirects there.
 
-## Stack
+## stack
 
 - [Astro](https://astro.build) (static output) with strict TypeScript
 - [Tailwind CSS](https://tailwindcss.com) v4, CSS-first (`@theme` in `src/styles/global.css`), palette colors only
@@ -12,7 +16,7 @@ Landing site for **partitelle**, a project that helps friends organize casual te
 - pnpm (via corepack), Node 24 (`.nvmrc`)
 - No UI framework: vanilla TypeScript only, where JS is needed
 
-## Develop
+## develop
 
 ```sh
 corepack enable
@@ -20,9 +24,9 @@ pnpm i
 pnpm dev
 ```
 
-## Scripts
+## scripts
 
-| Script           | What it does                                                            |
+| script           | what it does                                                            |
 | ---------------- | ----------------------------------------------------------------------- |
 | `pnpm dev`       | Astro dev server                                                        |
 | `pnpm build`     | Static build into `dist/`                                               |
@@ -40,14 +44,14 @@ pnpm dev
 - `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main` (and manually), then runs a smoke test on the live URL. The custom domain `partitelle.com` is set in the repository Pages settings, not with a `CNAME` file: with an Actions-based deploy a `CNAME` file is ignored.
 - Third-party actions are pinned to commit SHAs; Dependabot updates npm and actions weekly, grouping minor and patch bumps.
 
-## Privacy
+## privacy
 
 The privacy notice is published at https://partitelle.com/privacy (page `src/pages/privacy.astro`, copy in `src/i18n/it.ts`).
 
-## Brand
+## brand
 
 Brand tokens (colors, type) and motion variables live in `src/styles/global.css`. The logo SVGs the site serves live in `public/brand/` and `public/favicon.svg`; `brand/` keeps the app icons, the yellow logo mark and `og-image.svg`, the source of `public/og-image.png`. All user-facing strings live in `src/i18n/it.ts`.
 
-## License
+## license
 
 This repository has no open-source license: see [NOTICE](NOTICE) for the code and the content, and [TRADEMARKS.md](TRADEMARKS.md) for the name and the marks.
