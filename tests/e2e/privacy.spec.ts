@@ -12,7 +12,7 @@ const HEADINGS = [
   "5. cosa non raccogliamo",
   "6. da dove arrivano i dati",
   "7. perché li usiamo e su quale base",
-  "8. cosa non facciamo mai",
+  "8. cosa non facciamo",
   "9. chi altro tratta i dati",
   "10. trasferimenti fuori dall'Unione europea",
   "11. per quanto tempo conserviamo i dati",
@@ -41,6 +41,10 @@ test("has the 16 sections in order, with the update date", async ({ page }) => {
     "ultimo aggiornamento: 1 novembre 2026",
   );
   await expect(page.locator("time")).toHaveAttribute("datetime", "2026-11-01");
+  await expect(page.locator("time")).toHaveAttribute(
+    "datetime",
+    /^\d{4}-\d{2}-\d{2}$/,
+  );
   await expect(page).toHaveTitle("informativa privacy · partitelle");
 });
 
@@ -87,6 +91,17 @@ test("links go where the notice says", async ({ page }) => {
   await expect(
     article.getByRole("link", { name: "punto 12" }).first(),
   ).toHaveAttribute("href", "#i-tuoi-diritti");
+  await expect(page.locator("#cosa-non-facciamo")).toHaveCount(1);
+  await expect(
+    page
+      .locator('section[aria-labelledby="cosa-non-facciamo"]')
+      .getByRole("link", { name: "punto 9" }),
+  ).toHaveAttribute("href", "#chi-altro-tratta-i-dati");
+  await expect(
+    page
+      .locator('section[aria-labelledby="chi-altro-tratta-i-dati"]')
+      .getByRole("link", { name: "punto 8" }),
+  ).toHaveAttribute("href", "#cosa-non-facciamo");
 });
 
 test("names the controller", async ({ page }) => {
@@ -111,6 +126,16 @@ test("carries the agreed wording of the final copy", async ({ page }) => {
   await expect(
     page.locator('section[aria-labelledby="trasferimenti"]'),
   ).toContainText("tutti e tre aderiscono all'EU-U.S. Data Privacy Framework");
+  await expect(
+    page.getByText(
+      "se partitelle passa a un'altra persona o società, i dati passano con il servizio e questa informativa continua a valere.",
+    ),
+  ).toBeVisible();
+  await expect(
+    page.getByText(
+      '1 novembre 2026: aggiunto l\'ID utente Telegram tra i dati salvati; riscritti "cosa non facciamo" e il punto 7 d); aggiunto cosa succede ai dati se partitelle passa ad altri; descritti meglio i messaggi che il bot legge, i dati salvati, quelli delle versioni precedenti e i log.',
+    ),
+  ).toBeVisible();
 });
 
 test("ships no placeholder or internal word", async ({ page }) => {
@@ -123,6 +148,10 @@ test("ships no placeholder or internal word", async ({ page }) => {
     expect(haystack).not.toMatch(/LAWYER/i);
     expect(haystack).not.toContain("CEO");
   }
+  // A placeholder date ("XX novembre", "2026-11-XX") must never ship.
+  // Checked on the visible text only: hashed asset names in the html could contain "XX".
+  expect(text).not.toMatch(/\bXX\b/);
+  await expect(page.locator("time")).not.toContainText("XX");
 });
 
 test("loads no external resource", async ({ page }) => {

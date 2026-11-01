@@ -17,6 +17,8 @@ export interface PrivacySection {
 
 const MAIL = "mailto:privacy@partitelle.com";
 const mail: Segment = { text: "privacy@partitelle.com", href: MAIL };
+const point8: Segment = { text: "punto 8", href: "#cosa-non-facciamo" };
+const point9: Segment = { text: "punto 9", href: "#chi-altro-tratta-i-dati" };
 const point12: Segment = { text: "punto 12", href: "#i-tuoi-diritti" };
 const point7: Segment = { text: "punto 7", href: "#perche-li-usiamo" };
 const point7d: Segment = { text: "punto 7 d)", href: "#perche-li-usiamo" };
@@ -115,12 +117,17 @@ const privacy: {
               "l'identificativo della chat Telegram in cui viene usato (un gruppo o una chat privata);",
             ],
             [
+              'il tuo ID utente Telegram (un numero che Telegram assegna a ogni account), quando ti aggiungi da solo con "aggiungimi" o "proponimi". se usi il bot in una chat privata, l\'identificativo di quella chat coincide con il tuo ID utente: in quel caso lo salviamo come identificativo della chat. serve a riconoscerti anche se cambi nome o username, a non metterti in lista due volte, a togliere la riga giusta quando scrivi "toglimi" e a trovare i tuoi dati se ce lo chiedi;',
+            ],
+            [
               "i dati della partita: giorno e ora, quanti giocatori sono previsti, il campo e la descrizione scritti con /setpitch e /setdescription, gli identificativi dei messaggi di riepilogo inviati dal bot, e le date in cui la partita è stata creata, modificata e chiusa;",
             ],
             [
-              "la lista dei partecipanti: per ogni persona, il nome con cui compare in lista, lo stato (confermato o in forse), la posizione in lista e la squadra (nera o bianca);",
+              "la lista dei partecipanti: per ogni persona, il nome con cui compare in lista, lo stato (confermato o in forse), la posizione in lista, la squadra (nera o bianca), la data e l'ora in cui è entrata in lista e quelle dell'ultima modifica;",
             ],
-            ["alcune impostazioni del gruppo, come il campo predefinito."],
+            [
+              "per i gruppi che usavano già le versioni precedenti del bot, il campo predefinito del gruppo.",
+            ],
           ],
         },
         { type: "p", segments: ["il nome con cui compari in lista è:"] },
@@ -147,7 +154,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "conserviamo anche i dati raccolti dalle versioni precedenti del bot, che sono dello stesso tipo.",
+            "i dati raccolti dalle versioni precedenti del bot sono stati copiati nel database attuale e sono dello stesso tipo. conserviamo anche una vecchia tabella delle versioni precedenti, che il bot non usa più: contiene i nomi in lista, le squadre, giorno e ora della partita, la descrizione e il campo.",
           ],
         },
       ],
@@ -159,13 +166,13 @@ const privacy: {
         {
           type: "p",
           segments: [
-            'per riconoscere le parole chiave (come "aggiungimi", "toglimi", "aggiungi <nome>"), il bot riceve da Telegram i messaggi di testo scritti nel gruppo. il bot controlla solo se il messaggio inizia con una parola chiave: il testo dei messaggi non viene salvato. dai messaggi con una parola chiave salviamo solo il dato che serve al comando (per esempio il nome da aggiungere).',
+            'per riconoscere le parole chiave, il bot riceve da Telegram tutti i messaggi di testo scritti nel gruppo (o nella chat privata con il bot). li usa solo se tutto il messaggio è "aggiungimi", "toglimi" o "proponimi", oppure se la prima parola è "aggiungi", "togli", "proponi" o "scambia" (per esempio "aggiungi luca" o "scambia luca con marco"). tutti gli altri messaggi vengono scartati: non li salviamo e non li scriviamo nei log. dai messaggi con una parola chiave salviamo solo il dato che serve al comando (per esempio il nome da aggiungere).',
           ],
         },
         {
           type: "p",
           segments: [
-            "quando il bot incontra un errore tecnico, il server registra un messaggio di errore (log) che a volte può contenere un nome in lista o l'identificativo della chat. i log servono solo a correggere i malfunzionamenti. li conserva il fornitore di hosting per un periodo limitato (al massimo 30 giorni), secondo le sue regole.",
+            "quando il bot incontra un errore tecnico, il server registra un messaggio di errore (log). a volte il log può contenere un nome in lista, il testo del campo o della descrizione, o l'identificativo della chat. i log servono solo a correggere i malfunzionamenti. li conserva il fornitore di hosting per un periodo limitato (al massimo 30 giorni), secondo le sue regole.",
           ],
         },
       ],
@@ -177,7 +184,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "il bot non salva il tuo ID utente Telegram, il tuo numero di telefono, la tua foto profilo, la tua posizione, né il contenuto dei messaggi del gruppo.",
+            "il bot non salva il tuo numero di telefono, la tua foto profilo, la tua posizione, né i messaggi interi del gruppo. salva solo le parti che servono ai comandi: i nomi scritti dopo una parola chiave e il testo di campo e descrizione scritto con /setpitch e /setdescription.",
           ],
         },
         {
@@ -200,7 +207,7 @@ const privacy: {
               'da altri membri del gruppo, quando scrivono il tuo nome (per esempio "aggiungi luca"), impostano campo e descrizione o fanno le squadre.',
             ],
             [
-              "da Telegram, che ci invia l'identificativo della chat e, quando ti aggiungi da solo, il tuo username o il nome del tuo profilo.",
+              "da Telegram, che ci invia l'identificativo della chat e, quando ti aggiungi da solo, il tuo ID utente e il tuo username o il nome del tuo profilo.",
             ],
           ],
         },
@@ -235,7 +242,7 @@ const privacy: {
             {
               lead: "d) possibili servizi futuri per aziende",
               segments: [
-                " (per esempio centri sportivi), basati solo su statistiche aggregate e anonime come quelle del punto c). oggi non lo facciamo. se lo faremo, non condivideremo mai dati su persone o su singoli gruppi.",
+                " (per esempio centri sportivi): oggi non lo facciamo. se lo faremo, useremo statistiche aggregate e anonime come quelle del punto c). daremo dati su un singolo gruppo solo se è il gruppo a chiederlo, e mai la lista dei giocatori.",
               ],
             },
           ],
@@ -251,27 +258,36 @@ const privacy: {
       ],
     },
     {
-      id: "cosa-non-facciamo-mai",
-      title: "cosa non facciamo mai",
+      id: "cosa-non-facciamo",
+      title: "cosa non facciamo",
       blocks: [
         {
           type: "ul",
           items: [
+            ["non vendiamo dati personali."],
             [
-              "non vendiamo e non condividiamo con nessuno dati personali o dati sulle singole chat.",
+              "non diamo a nessuno dati su di te o sul tuo gruppo, tranne ai fornitori che fanno funzionare il servizio (vedi il ",
+              point9,
+              "), quando lo impone la legge o quando ce lo chiedete voi. per esempio, se un giorno potrete chiedere un campo a un centro sportivo, gli manderemo solo quello che serve alla richiesta, mai la lista dei giocatori.",
             ],
             [
-              "non profiliamo le persone: nessun punteggio o classifica individuale (presenze, affidabilità, pagamenti) mostrato o ceduto a terzi.",
+              "non facciamo punteggi o classifiche su di te da dare ad altri. se il bot mostrerà statistiche sui singoli giocatori (per esempio quante partite hai giocato), le vedrà solo il tuo gruppo.",
             ],
             [
-              "non ricaviamo dai messaggi la tua posizione o altre informazioni su di te.",
+              "leggiamo i messaggi solo per capire i comandi: chi gioca, quando, dove. non ne ricaviamo dove abiti, dove ti trovi o altre informazioni personali su di te.",
             ],
             [
-              "non usiamo i dati per la pubblicità e non mandiamo messaggi promozionali nei gruppi.",
+              "non usiamo i tuoi dati per pubblicità mirata e il bot non manda messaggi promozionali che nessuno ha chiesto. se un giorno suggerirà campi o offerte, lo farà solo quando il gruppo lo chiede, e i suggerimenti a pagamento saranno indicati come tali.",
             ],
             [
               "non usiamo i messaggi o i dati delle chat per addestrare modelli di intelligenza artificiale.",
             ],
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "se vorremo usare i dati in un modo nuovo, prima aggiorneremo questa informativa e lo diremo nel bot. se servirà il vostro consenso, lo chiederemo prima.",
           ],
         },
       ],
@@ -307,7 +323,15 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "non diamo i dati a nessun altro, salvo quando la legge ci obbliga.",
+            "non diamo i dati a nessun altro, salvo quando la legge ci obbliga o quando ce lo chiedete voi (vedi il ",
+            point8,
+            ").",
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "se partitelle passa a un'altra persona o società, i dati passano con il servizio e questa informativa continua a valere.",
           ],
         },
       ],
@@ -393,7 +417,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "per trovarti nei nostri dati ci serve sapere come compari nelle liste (username o nome) e in quale gruppo giochi. il bot non salva il tuo ID Telegram, quindi potremmo chiederti qualche informazione in più per essere sicuri di trovare i dati giusti. se non riusciamo a identificarti, te lo diciamo.",
+            "per trovarti nei nostri dati ci serve sapere come compari nelle liste (username o nome) e in quale gruppo giochi. se ce l'abbiamo, usiamo anche il tuo ID utente Telegram. se non riusciamo a identificarti, te lo diciamo.",
           ],
         },
         {
@@ -477,7 +501,15 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "se cambiamo questa informativa, pubblichiamo la nuova versione su questa pagina, con la data di aggiornamento.",
+            "se cambiamo questa informativa, pubblichiamo la nuova versione su questa pagina, con la data e un riassunto di cosa è cambiato. se il cambiamento riguarda come usiamo i tuoi dati, lo diciamo anche nel bot prima che valga.",
+          ],
+        },
+        {
+          type: "ul",
+          items: [
+            [
+              '1 novembre 2026: aggiunto l\'ID utente Telegram tra i dati salvati; riscritti "cosa non facciamo" e il punto 7 d); aggiunto cosa succede ai dati se partitelle passa ad altri; descritti meglio i messaggi che il bot legge, i dati salvati, quelli delle versioni precedenti e i log.',
+            ],
           ],
         },
       ],
