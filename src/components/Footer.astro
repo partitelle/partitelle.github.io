@@ -2,7 +2,8 @@
 import { it } from "../i18n/it";
 
 const year = new Date().getFullYear();
-const current = Astro.url.pathname.replace(/\/$/, "") === it.links.privacy;
+const path = Astro.url.pathname.replace(/\/$/, "");
+const isCurrent = (href: string) => path === href;
 ---
 <footer class="on-dark bg-black text-white">
   <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-12 lg:px-12">
@@ -18,8 +19,14 @@ const current = Astro.url.pathname.replace(/\/$/, "") === it.links.privacy;
         href={it.links.privacy}
         class="inline-flex min-h-12 items-center text-white underline underline-offset-4"
         aria-label={it.footer.privacy}
-        aria-current={current ? "page" : undefined}
+        aria-current={isCurrent(it.links.privacy) ? "page" : undefined}
       >{it.footer.privacyLabel}</a>
+      <a
+        href={it.links.status}
+        class="inline-flex min-h-12 items-center text-white underline underline-offset-4"
+        aria-label={it.footer.status}
+        aria-current={isCurrent(it.links.status) ? "page" : undefined}
+      >{it.footer.statusLabel}</a>
       <p>© {year} {it.site.name} · {it.footer.rights}</p>
     </div>
   </div>

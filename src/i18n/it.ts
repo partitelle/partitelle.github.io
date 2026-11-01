@@ -306,7 +306,7 @@ const privacy: {
           type: "ul",
           items: [
             [
-              "Render (Render Services, Inc., USA): ospita il server del bot e i suoi log.",
+              "Render (Render Services, Inc., USA): ospita il server del bot e i suoi log, e risponde alla pagina /status del sito.",
             ],
             [
               "Neon (Neon, LLC, del gruppo Databricks, USA): ospita il database, su server Amazon Web Services a Francoforte (Germania).",
@@ -460,7 +460,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "il sito non usa cookie, non usa strumenti di analisi o di tracciamento e non carica risorse da altri siti (i caratteri sono ospitati sul sito stesso).",
+            'il sito non usa cookie, non usa strumenti di analisi o di tracciamento e non carica risorse da altri siti (i caratteri sono ospitati sul sito stesso). unica eccezione: quando apri la pagina /status o premi "controlla di nuovo", il tuo browser chiede al server del bot, ospitato da Render, se è attivo. come per qualsiasi richiesta, Render riceve l\'indirizzo IP e il tipo di browser e può tenerli nei suoi log per un periodo limitato. la risposta non contiene dati personali e la pagina non salva nulla sul tuo dispositivo.',
           ],
         },
         {
@@ -510,12 +510,69 @@ const privacy: {
             [
               '1 novembre 2026: aggiunto l\'ID utente Telegram tra i dati salvati; riscritti "cosa non facciamo" e il punto 7 d); aggiunto cosa succede ai dati se partitelle passa ad altri; descritti meglio i messaggi che il bot legge, i dati salvati, quelli delle versioni precedenti e i log.',
             ],
+            [
+              "1 novembre 2026: aggiunta la pagina /status, che chiede al server del bot se è attivo.",
+            ],
           ],
         },
       ],
     },
   ],
 };
+
+const howParagraphs: readonly (readonly Segment[])[] = [
+  [
+    'il controllo parte dal tuo browser quando apri la pagina o quando premi "controlla di nuovo". non facciamo controlli automatici e non teniamo uno storico: vedi solo com\'è adesso.',
+  ],
+  [
+    "se nessuno usa il bot da un po', il bot va in pausa. la prima richiesta lo risveglia e può metterci fino a un minuto: è normale.",
+  ],
+  [
+    "per sapere quali dati passano in questo controllo, leggi ",
+    { text: "l'informativa privacy", href: "/privacy#il-sito" },
+    ".",
+  ],
+];
+
+const status = {
+  meta: {
+    title: "stato del bot · partitelle",
+    description:
+      "controlla se il bot di partitelle risponde in questo momento.",
+  },
+  title: "stato del bot",
+  lead: "qui vedi se il bot risponde adesso. il controllo parte quando apri la pagina.",
+  states: {
+    checking: {
+      title: "controllo in corso",
+      body: "stiamo chiedendo al bot se risponde.",
+    },
+    waking: {
+      title: "ancora un attimo",
+      body: "se nessuno lo usa da un po', il bot va in pausa e può metterci fino a un minuto a ripartire. aspetta qui, non serve ricaricare la pagina.",
+    },
+    up: {
+      title: "il bot è attivo",
+      body: "risponde e riesce a leggere e salvare le partite.",
+    },
+    degraded: {
+      title: "il bot ha un problema",
+      body: "risponde, ma in questo momento non riesce a leggere o salvare le partite: i comandi potrebbero non funzionare. riprova tra qualche minuto.",
+    },
+    unknown: {
+      title: "nessuna risposta dal bot",
+      body: "non sappiamo se il bot è fermo o se è un problema di connessione. controlla la tua connessione e riprova tra poco.",
+    },
+  },
+  checkedAt: "controllato alle",
+  button: "controlla di nuovo",
+  noscript:
+    "per controllare lo stato del bot, questa pagina ha bisogno di JavaScript.",
+  how: {
+    title: "come funziona questa pagina",
+    paragraphs: howParagraphs,
+  },
+} as const;
 
 export const it = {
   site: {
@@ -687,11 +744,16 @@ export const it = {
     logoAlt: "partitelle",
     privacyLabel: "privacy",
     privacy: "informativa privacy",
+    statusLabel: "stato",
+    status: "stato del bot",
   },
   links: {
     bot: "https://t.me/PartitelleBot?startgroup=true",
     github: "https://github.com/partitelle",
     privacy: "/privacy",
+    status: "/status",
+    health: "https://partitelle-bot.onrender.com/health",
   },
+  status,
   privacy,
 } as const;
