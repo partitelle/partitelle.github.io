@@ -450,7 +450,7 @@ const privacy: {
           segments: [
             "se qualcuno del tuo gruppo ti ha aggiunto alla lista scrivendo il tuo nome, questa informativa vale anche per te, anche se non hai mai usato il bot. puoi chiedere di cancellare il tuo nome come spiegato al ",
             point12,
-            ', o chiedere al gruppo di toglierti con "togli <nome>", anche dalla mini app.',
+            ', o chiedere al gruppo di toglierti, con "togli <nome>" o dalla mini app.',
           ],
         },
         {
@@ -497,7 +497,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "sotto il riepilogo della partita nel gruppo c'è il pulsante \"apri la lista\". apre la mini app di partitelle: una pagina dentro Telegram dove vedi giorno, ora, campo e descrizione della partita, chi c'è, chi è in forse e le squadre. come nel gruppo, puoi aggiungerti, metterti in forse o toglierti, e puoi fare lo stesso per gli altri: aggiungere qualcuno scrivendo il suo nome, metterlo in forse o confermarlo, toglierlo o scambiarlo di squadra.",
+            "sotto il riepilogo della partita nel gruppo c'è il pulsante \"apri la lista\". apre la mini app di partitelle: una pagina dentro Telegram dove vedi giorno, ora, campo e descrizione della partita, chi c'è, chi è in forse e le squadre. come nel gruppo, puoi aggiungerti, metterti in forse o toglierti, e puoi fare lo stesso per le altre persone: aggiungerle scrivendo il loro nome, metterle in forse o confermarle, toglierle o scambiarle di squadra.",
           ],
         },
         {
@@ -551,7 +551,7 @@ const privacy: {
           segments: [
             'la mini app non salva niente in più rispetto al bot nel gruppo. se ti aggiungi o ti metti in forse dalla mini app, salviamo gli stessi dati di "aggiungimi" e "proponimi": il nome con cui compari in lista e il tuo ID utente (vedi il ',
             point3,
-            '). se ti togli, succede lo stesso che con "toglimi". se aggiungi qualcun altro, anche in forse, salviamo solo il nome che scrivi, come con "aggiungi luca" e "proponi luca": nessun ID utente. se togli, sposti o scambi qualcuno, succede lo stesso che con "togli" e "scambia". non salviamo chi ha fatto la modifica. se guardi solo la lista, nel database non salviamo nessun dato su di te.',
+            '). se ti togli, succede lo stesso che con "toglimi". se aggiungi qualcun altro, anche in forse, salviamo solo il nome che scrivi, come con "aggiungi luca" e "proponi luca": nessun ID utente. se togli, sposti o scambi qualcuno, succede lo stesso che con "togli", "proponi", "aggiungi" e "scambia". non salviamo chi ha fatto la modifica. se guardi solo la lista, nel database non salviamo nessun dato su di te.',
           ],
         },
         {
@@ -610,7 +610,7 @@ const privacy: {
           type: "ul",
           items: [
             [
-              "1 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7 e 9.",
+              "1 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
             ],
             [
               '1 novembre 2026: aggiunto l\'ID utente Telegram tra i dati salvati; riscritti "cosa non facciamo" e il punto 7 d); aggiunto cosa succede ai dati se partitelle passa ad altri; descritti meglio i messaggi che il bot legge, i dati salvati, quelli delle versioni precedenti e i log.',
