@@ -1,0 +1,41 @@
+---
+import Footer from "../components/Footer.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import StatusPanel from "../components/StatusPanel.astro";
+import { it } from "../i18n/it";
+import Base from "../layouts/Base.astro";
+
+const s = it.status;
+const link = "underline underline-offset-4 hover:decoration-2";
+const first = "mt-4 text-base leading-relaxed lg:mt-6 lg:text-xl";
+const next = "mt-4 text-base leading-relaxed lg:text-xl";
+---
+<Base title={s.meta.title} description={s.meta.description} canonical="https://partitelle.com/status/">
+  <div class="bg-yellow text-black">
+    <SiteHeader />
+  </div>
+  <main>
+    <section aria-labelledby="status-title" class="bg-yellow text-black">
+      <div class="mx-auto w-full max-w-7xl px-6 pb-12 pt-6 lg:px-12 lg:pb-16">
+        <h1 id="status-title" class="text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-[4rem]">{s.title}</h1>
+        <p class="mt-6 max-w-[34rem] text-xl leading-relaxed text-muted">{s.lead}</p>
+      </div>
+    </section>
+    <div class="bg-white text-black">
+      <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:px-12 lg:py-24">
+        <StatusPanel />
+        <section aria-labelledby="status-how" class="mt-16 max-w-prose lg:mt-24">
+          <h2 id="status-how" class="text-2xl leading-[1.1] text-balance lg:text-4xl">{s.how.title}</h2>
+          {
+            s.how.paragraphs.map((segments, i) => (
+              <p class={i === 0 ? first : next}>
+                {segments.map((seg) => (typeof seg === "string" ? seg : <a href={seg.href} class={link}>{seg.text}</a>))}
+              </p>
+            ))
+          }
+        </section>
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>

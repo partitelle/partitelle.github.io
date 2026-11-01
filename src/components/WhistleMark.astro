@@ -1,17 +1,21 @@
 ---
 interface Props {
-  label: string;
+  label?: string;
+  // Decorative marks are hidden from assistive technology.
+  decorative?: boolean;
   class?: string;
 }
 
-const { label, class: className } = Astro.props;
+const { label, decorative = false, class: className } = Astro.props;
 ---
 <svg
   xmlns="http://www.w3.org/2000/svg"
   viewBox="100 89 327 323"
   overflow="visible"
-  role="img"
-  aria-label={label}
+  role={decorative ? undefined : "img"}
+  aria-label={decorative ? undefined : label}
+  aria-hidden={decorative ? "true" : undefined}
+  focusable={decorative ? "false" : undefined}
   class={className}
   data-whistle
 >
@@ -53,6 +57,8 @@ const { label, class: className } = Astro.props;
       }
     };
     mark.addEventListener("pointerenter", whistle);
+    // Lets the page ask for one whistle (e.g. the status page, on a retry).
+    mark.addEventListener("whistle-replay", whistle);
     mark
       .closest("a, button, [tabindex]")
       ?.addEventListener("focusin", whistle);

@@ -4,7 +4,8 @@
       "staticDistDir": "./dist",
       "numberOfRuns": 3,
       "settings": {
-        "chromeFlags": "--no-sandbox"
+        "chromeFlags": "--no-sandbox",
+        "blockedUrlPatterns": ["https://partitelle-bot.onrender.com/*"]
       }
     },
     "assert": {

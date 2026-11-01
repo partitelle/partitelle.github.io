@@ -1,0 +1,176 @@
+---
+import { it } from "../i18n/it";
+import { ctaPill } from "../lib/classes";
+import WhistleMark from "./WhistleMark.astro";
+
+const s = it.status;
+// The panel ships in the "checking" state: no layout shift for visitors
+// with JavaScript, and a plain sentence for those without. The minimum
+// height fits the tallest state at each width (measured, not guessed), so
+// nothing below the panel moves when the answer arrives.
+const copy = {
+  states: s.states,
+  endpoint: it.links.health,
+};
+const icon = "absolute inset-0 invisible";
+---
+<div
+  data-status-panel
+  data-state="checking"
+  data-copy={JSON.stringify(copy)}
+  class="min-h-[24rem] max-w-[40rem] rounded-panel bg-paper p-6 text-black min-[400px]:min-h-[21rem] sm:min-h-[18.5rem] sm:p-8 lg:min-h-[20.5rem]"
+>
+  <div class="flex items-start gap-4 noscript:hidden sm:gap-6">
+    <div class="relative size-10 shrink-0 sm:size-14" aria-hidden="true">
+      <div data-icon="checking" class="absolute inset-0">
+        <WhistleMark decorative class="size-full text-black" />
+      </div>
+      <svg data-icon="up" class={icon} viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <circle cx="24" cy="24" r="24" class="fill-black" />
+        <path d="M14 25 21 32 34 17" fill="none" class="stroke-yellow" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <svg data-icon="degraded" class={icon} viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <circle cx="24" cy="24" r="24" class="fill-yellow" />
+        <path d="M24 13V27" fill="none" class="stroke-black" stroke-width="4.5" stroke-linecap="round" />
+        <circle cx="24" cy="35" r="2.75" class="fill-black" />
+      </svg>
+      <svg data-icon="unknown" class={icon} viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+        <circle cx="24" cy="24" r="22.25" fill="none" class="stroke-black" stroke-width="3.5" />
+        <path d="M18.5 19.5a5.5 5.5 0 1 1 7.9 4.95c-1.5.75-2.4 1.9-2.4 3.4V28.5" fill="none" class="stroke-black" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" />
+        <circle cx="24" cy="35" r="2.75" class="fill-black" />
+      </svg>
+    </div>
+    <div class="min-w-0">
+      <div role="status">
+        <h2 data-title class="text-2xl leading-[1.1] text-balance lg:text-4xl">{s.states.checking.title}</h2>
+        <p data-body class="mt-3 text-base leading-relaxed lg:text-xl">{s.states.checking.body}</p>
+      </div>
+      <p data-checked hidden class="mt-4 text-sm text-muted">{s.checkedAt} <time data-time></time></p>
+      <button type="button" data-retry hidden class={`${ctaPill} mt-6 text-base`}>{s.button}</button>
+    </div>
+  </div>
+  <p class="hidden text-base leading-relaxed noscript:block lg:text-xl">{s.noscript}</p>
+</div>
+
+<script>
+  // One request when the page opens and one per click on the retry button.
+  // No polling, no automatic retry, nothing stored. Only the two exact
+  // values below turn into "up" or "degraded"; anything else is "unknown".
+  // No part of the response ever reaches the page: the text on screen always
+  // comes from the copy rendered by the server.
+  type State = "checking" | "waking" | "up" | "degraded" | "unknown";
+  type Copy = Record<State, { title: string; body: string }>;
+
+  const WAKING_AFTER_MS = 5_000;
+  const TIMEOUT_MS = 60_000;
+  const MIN_RETRY_CHECKING_MS = 500;
+
+  const panel = document.querySelector<HTMLElement>("[data-status-panel]");
+  if (panel) init(panel);
+
+  function init(panel: HTMLElement) {
+    const { states, endpoint } = JSON.parse(panel.dataset.copy ?? "{}") as {
+      states: Copy;
+      endpoint: string;
+    };
+    const $ = <T extends Element>(selector: string) =>
+      panel.querySelector<T>(selector) as T;
+    const title = $<HTMLElement>("[data-title]");
+    const body = $<HTMLElement>("[data-body]");
+    const checked = $<HTMLElement>("[data-checked]");
+    const time = $<HTMLTimeElement>("[data-time]");
+    const retry = $<HTMLButtonElement>("[data-retry]");
+    const icons = panel.querySelectorAll<HTMLElement | SVGElement>(
+      "[data-icon]",
+    );
+    const mark = panel.querySelector<SVGSVGElement>("[data-whistle]");
+    const formatter = new Intl.DateTimeFormat("it-IT", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    let busy = false;
+
+    const show = (state: State) => {
+      const final = state !== "checking" && state !== "waking";
+      const degraded = state === "degraded";
+      panel.dataset.state = state;
+      panel.classList.toggle("bg-paper", state !== "up" && !degraded);
+      panel.classList.toggle("bg-yellow", state === "up");
+      panel.classList.toggle("bg-black", degraded);
+      panel.classList.toggle("on-dark", degraded);
+      panel.classList.toggle("text-black", !degraded);
+      panel.classList.toggle("text-white", degraded);
+      checked.classList.toggle("text-muted", !degraded);
+      checked.classList.toggle("text-white", degraded);
+      retry.classList.toggle("bg-black", !degraded);
+      retry.classList.toggle("text-white", !degraded);
+      retry.classList.toggle("bg-yellow", degraded);
+      retry.classList.toggle("text-black", degraded);
+      const key = state === "waking" ? "checking" : state;
+      for (const icon of icons) {
+        icon.classList.toggle("invisible", icon.dataset.icon !== key);
+      }
+      title.textContent = states[state].title;
+      body.textContent = states[state].body;
+      checked.hidden = !final;
+    };
+
+    const classify = async (
+      signal: AbortSignal,
+    ): Promise<"up" | "degraded" | "unknown"> => {
+      try {
+        const response = await fetch(endpoint, {
+          cache: "no-store",
+          credentials: "omit",
+          mode: "cors",
+          referrerPolicy: "no-referrer",
+          signal,
+        });
+        const data: unknown = await response.json();
+        const status =
+          typeof data === "object" && data !== null
+            ? (data as { status?: unknown }).status
+            : undefined;
+        if (response.status === 200 && status === "ok") return "up";
+        if (status === "degraded") return "degraded";
+        return "unknown";
+      } catch {
+        return "unknown";
+      }
+    };
+
+    const run = async (isRetry: boolean) => {
+      if (busy) return;
+      busy = true;
+      const started = Date.now();
+      show("checking");
+      if (isRetry) {
+        retry.setAttribute("aria-disabled", "true");
+        mark?.dispatchEvent(new Event("whistle-replay"));
+      }
+      const wake = setTimeout(() => show("waking"), WAKING_AFTER_MS);
+      const controller = new AbortController();
+      const abort = setTimeout(() => controller.abort(), TIMEOUT_MS);
+      const result = await classify(controller.signal);
+      clearTimeout(abort);
+      clearTimeout(wake);
+      const answeredAt = new Date();
+      if (isRetry) {
+        const wait = MIN_RETRY_CHECKING_MS - (Date.now() - started);
+        if (wait > 0) await new Promise((resolve) => setTimeout(resolve, wait));
+      }
+      time.textContent = formatter.format(answeredAt);
+      time.dateTime = answeredAt.toISOString();
+      show(result);
+      retry.hidden = false;
+      retry.setAttribute("aria-disabled", "false");
+      busy = false;
+    };
+
+    retry.addEventListener("click", () => {
+      if (retry.getAttribute("aria-disabled") === "true") return;
+      void run(true);
+    });
+    void run(false);
+  }
+</script>
