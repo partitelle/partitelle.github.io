@@ -557,6 +557,12 @@ const privacy: {
         {
           type: "p",
           segments: [
+            "quando dalla mini app aggiungi, metti in forse, confermi, togli o scambi di squadra un'altra persona, il bot lo scrive nel gruppo con il tuo nome, così nel gruppo si vede chi ha fatto la modifica, come quando scrivi in chat. il tuo nome compare solo in quel messaggio: non lo salviamo insieme alla modifica.",
+          ],
+        },
+        {
+          type: "p",
+          segments: [
             "se la mini app incontra un errore tecnico, il log di errore non contiene ID utente, nomi o altri testi scritti nella mini app.",
           ],
         },
