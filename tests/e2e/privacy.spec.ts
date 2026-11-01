@@ -143,7 +143,7 @@ test("declares the /status exception and the Render role", async ({ page }) => {
   await expect(
     page.locator('section[aria-labelledby="il-sito"]'),
   ).toContainText(
-    "il sito non usa cookie, non usa strumenti di analisi o di tracciamento e non carica risorse da altri siti (i caratteri sono ospitati sul sito stesso). unica eccezione: quando apri la pagina /status, il tuo browser chiede al server del bot, ospitato da Render, se è attivo. come per qualsiasi richiesta, Render riceve l'indirizzo IP e il tipo di browser e può tenerli nei suoi log per un periodo limitato. la risposta non contiene dati personali e la pagina non salva nulla sul tuo dispositivo.",
+    'il sito non usa cookie, non usa strumenti di analisi o di tracciamento e non carica risorse da altri siti (i caratteri sono ospitati sul sito stesso). unica eccezione: quando apri la pagina /status o premi "controlla di nuovo", il tuo browser chiede al server del bot, ospitato da Render, se è attivo. come per qualsiasi richiesta, Render riceve l\'indirizzo IP e il tipo di browser e può tenerli nei suoi log per un periodo limitato. la risposta non contiene dati personali e la pagina non salva nulla sul tuo dispositivo.',
   );
   await expect(
     page.locator('section[aria-labelledby="chi-altro-tratta-i-dati"]'),

@@ -6,19 +6,21 @@ import WhistleMark from "./WhistleMark.astro";
 const s = it.status;
 // The panel ships in the "checking" state: no layout shift for visitors
 // with JavaScript, and a plain sentence for those without. The minimum
-// height fits the tallest state at each width (measured, not guessed), so
-// nothing below the panel moves when the answer arrives.
+// height sits on a plain wrapper, not on the coloured panel: it fits the
+// tallest state at each width (measured, not guessed), so nothing below
+// moves when the answer arrives, and the panel surface hugs its content.
 const copy = {
   states: s.states,
   endpoint: it.links.health,
 };
 const icon = "absolute inset-0 invisible";
 ---
+<div class="min-h-[24rem] min-[400px]:min-h-[21rem] sm:min-h-[18.5rem] lg:min-h-[20.5rem]">
 <div
   data-status-panel
   data-state="checking"
   data-copy={JSON.stringify(copy)}
-  class="min-h-[24rem] max-w-[40rem] rounded-panel bg-paper p-6 text-black min-[400px]:min-h-[21rem] sm:min-h-[18.5rem] sm:p-8 lg:min-h-[20.5rem]"
+  class="max-w-[40rem] rounded-panel bg-paper p-6 text-black sm:p-8"
 >
   <div class="flex items-start gap-4 noscript:hidden sm:gap-6">
     <div class="relative size-10 shrink-0 sm:size-14" aria-hidden="true">
@@ -50,6 +52,7 @@ const icon = "absolute inset-0 invisible";
     </div>
   </div>
   <p class="hidden text-base leading-relaxed noscript:block lg:text-xl">{s.noscript}</p>
+</div>
 </div>
 
 <script>

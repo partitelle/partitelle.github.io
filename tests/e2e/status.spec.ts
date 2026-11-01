@@ -399,25 +399,31 @@ test.describe("accessibility and structure", () => {
     });
   }
 
-  test("the panel keeps its height across states, nothing below jumps", async ({
+  test("the section below the panel keeps its y in all five states", async ({
     page,
   }) => {
-    let n = 0;
-    await mockHealth(page, (route) => {
-      n += 1;
-      return n % 2
-        ? route.fulfill(responses.degraded())
-        : route.fulfill(responses.up());
-    });
-    await page.goto("/status/");
-    const how = page.locator("#status-how");
-    await expect(panel(page)).toHaveAttribute("data-state", "degraded");
-    const pageTop = () =>
-      how.evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
-    const top = await pageTop();
-    await retry(page).click();
-    await expect(panel(page)).toHaveAttribute("data-state", "up");
-    expect(await pageTop()).toBe(top);
+    const states = ["checking", "waking", "up", "degraded", "unknown"] as const;
+    for (const width of [360, 390, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      const tops: Record<string, number> = {};
+      for (const state of states) {
+        await page.unroute(HEALTH);
+        await page.clock.install({ time: new Date("2026-11-01T21:04:00") });
+        if (state === "checking" || state === "waking")
+          await mockHealth(page, () => new Promise(() => {}));
+        else if (state === "unknown") await mockHealth(page, (r) => r.abort());
+        else await mockHealth(page, (r) => r.fulfill(responses[state]()));
+        await page.goto("/status/");
+        if (state === "waking") await page.clock.fastForward(5_500);
+        await expect(panel(page)).toHaveAttribute("data-state", state);
+        tops[state] = await page
+          .getByRole("heading", { name: "come funziona questa pagina" })
+          .evaluate((el) => el.getBoundingClientRect().top + window.scrollY);
+      }
+      for (const state of states) {
+        expect(tops[state], `${state} at ${width}`).toBe(tops.checking);
+      }
+    }
   });
 
   test("does not scroll sideways", async ({ page }) => {
