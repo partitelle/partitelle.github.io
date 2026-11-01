@@ -46,7 +46,7 @@ const privacy: {
   title: "informativa privacy",
   lead: "quali dati salva il bot, perché, e come chiederci di vederli o cancellarli.",
   updatedLabel: "ultimo aggiornamento:",
-  updated: { iso: "2026-11-01", text: "1 novembre 2026" },
+  updated: { iso: "2026-11-02", text: "2 novembre 2026" },
   indexLabel: "indice",
   sections: [
     {
@@ -616,7 +616,7 @@ const privacy: {
           type: "ul",
           items: [
             [
-              "1 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
+              "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
             ],
             [
               '1 novembre 2026: aggiunto l\'ID utente Telegram tra i dati salvati; riscritti "cosa non facciamo" e il punto 7 d); aggiunto cosa succede ai dati se partitelle passa ad altri; descritti meglio i messaggi che il bot legge, i dati salvati, quelli delle versioni precedenti e i log.',
