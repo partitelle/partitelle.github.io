@@ -120,6 +120,7 @@ test("the mini app section sits at point 15 and is linked from points 3 and 6", 
   await expect(section).toContainText(
     'sotto il riepilogo della partita nel gruppo c\'è il pulsante "apri la lista".',
   );
+  await expect(section).toContainText("puoi fare lo stesso per gli altri");
   await expect(section).toContainText(
     "non scarichiamo e non mostriamo mai la tua foto profilo.",
   );
@@ -166,7 +167,7 @@ test("the mini app change is the first changelog line", async ({ page }) => {
   await page.goto("/privacy/");
   const first = page.locator('section[aria-labelledby="modifiche"] li').first();
   await expect(first).toHaveText(
-    "1 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7 e 9.",
+    "1 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7 e 9.",
   );
 });
 
