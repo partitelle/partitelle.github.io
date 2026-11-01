@@ -20,6 +20,8 @@ const mail: Segment = { text: "privacy@partitelle.com", href: MAIL };
 const point8: Segment = { text: "punto 8", href: "#cosa-non-facciamo" };
 const point9: Segment = { text: "punto 9", href: "#chi-altro-tratta-i-dati" };
 const point12: Segment = { text: "punto 12", href: "#i-tuoi-diritti" };
+const point3: Segment = { text: "punto 3", href: "#dati-salvati" };
+const point15: Segment = { text: "punto 15", href: "#mini-app" };
 const point7: Segment = { text: "punto 7", href: "#perche-li-usiamo" };
 const point7d: Segment = { text: "punto 7 d)", href: "#perche-li-usiamo" };
 const bot: Segment = {
@@ -44,7 +46,7 @@ const privacy: {
   title: "informativa privacy",
   lead: "quali dati salva il bot, perché, e come chiederci di vederli o cancellarli.",
   updatedLabel: "ultimo aggiornamento:",
-  updated: { iso: "2026-11-01", text: "1 novembre 2026" },
+  updated: { iso: "2026-11-02", text: "2 novembre 2026" },
   indexLabel: "indice",
   sections: [
     {
@@ -84,7 +86,7 @@ const privacy: {
           segments: [
             "questa informativa spiega quali dati tratta il bot ",
             bot,
-            " quando lo usi su Telegram, in un gruppo o in una chat privata, e quali dati tratta il sito partitelle.com.",
+            " quando lo usi su Telegram, in un gruppo, in una chat privata o dalla sua mini app, e quali dati tratta il sito partitelle.com.",
           ],
         },
         {
@@ -117,7 +119,9 @@ const privacy: {
               "l'identificativo della chat Telegram in cui viene usato (un gruppo o una chat privata);",
             ],
             [
-              'il tuo ID utente Telegram (un numero che Telegram assegna a ogni account), quando ti aggiungi da solo con "aggiungimi" o "proponimi". se usi il bot in una chat privata, l\'identificativo di quella chat coincide con il tuo ID utente: in quel caso lo salviamo come identificativo della chat. serve a riconoscerti anche se cambi nome o username, a non metterti in lista due volte, a togliere la riga giusta quando scrivi "toglimi" e a trovare i tuoi dati se ce lo chiedi;',
+              'il tuo ID utente Telegram (un numero che Telegram assegna a ogni account), quando ti aggiungi da solo con "aggiungimi" o "proponimi" o con i pulsanti della mini app (vedi il ',
+              point15,
+              '). se usi il bot in una chat privata, l\'identificativo di quella chat coincide con il tuo ID utente: in quel caso lo salviamo come identificativo della chat. serve a riconoscerti anche se cambi nome o username, a non metterti in lista due volte, a togliere la riga giusta quando scrivi "toglimi" o ti togli dalla mini app, e a trovare i tuoi dati se ce lo chiedi;',
             ],
             [
               "i dati della partita: giorno e ora, quanti giocatori sono previsti, il campo e la descrizione scritti con /setpitch e /setdescription, gli identificativi dei messaggi di riepilogo inviati dal bot, e le date in cui la partita è stata creata, modificata e chiusa;",
@@ -202,12 +206,16 @@ const privacy: {
         {
           type: "ul",
           items: [
-            ["da te, quando usi un comando o una parola chiave."],
             [
-              'da altri membri del gruppo, quando scrivono il tuo nome (per esempio "aggiungi luca"), impostano campo e descrizione o fanno le squadre.',
+              "da te, quando usi un comando, una parola chiave o un pulsante della mini app.",
             ],
             [
-              "da Telegram, che ci invia l'identificativo della chat e, quando ti aggiungi da solo, il tuo ID utente e il tuo username o il nome del tuo profilo.",
+              'da altri membri del gruppo, quando scrivono il tuo nome, nel gruppo o nella mini app (per esempio "aggiungi luca"), impostano campo e descrizione o fanno le squadre.',
+            ],
+            [
+              "da Telegram, che ci invia l'identificativo della chat e, quando ti aggiungi da solo, il tuo ID utente e il tuo username o il nome del tuo profilo. quando apri la mini app, Telegram ci invia anche i dati elencati al ",
+              point15,
+              ".",
             ],
           ],
         },
@@ -224,7 +232,7 @@ const privacy: {
             {
               lead: "a) far funzionare il servizio:",
               segments: [
-                " creare la partita, tenere aggiornata la lista, fare le squadre, mandare riepiloghi e promemoria nel gruppo e conservare lo storico delle partite.",
+                " creare la partita, tenere aggiornata la lista e mostrarla solo a chi è nel gruppo, fare le squadre, mandare riepiloghi e promemoria nel gruppo, conservare lo storico delle partite ed evitare abusi.",
               ],
             },
             {
@@ -306,7 +314,7 @@ const privacy: {
           type: "ul",
           items: [
             [
-              "Render (Render Services, Inc., USA): ospita il server del bot e i suoi log, e risponde alla pagina /status del sito.",
+              "Render (Render Services, Inc., USA): ospita il server del bot, la mini app e i loro log, e risponde alla pagina /status del sito.",
             ],
             [
               "Neon (Neon, LLC, del gruppo Databricks, USA): ospita il database, su server Amazon Web Services a Francoforte (Germania).",
@@ -442,7 +450,7 @@ const privacy: {
           segments: [
             "se qualcuno del tuo gruppo ti ha aggiunto alla lista scrivendo il tuo nome, questa informativa vale anche per te, anche se non hai mai usato il bot. puoi chiedere di cancellare il tuo nome come spiegato al ",
             point12,
-            ', o chiedere al gruppo di toglierti con "togli <nome>".',
+            ', o chiedere al gruppo di toglierti, con "togli <nome>" o dalla mini app.',
           ],
         },
         {
@@ -483,6 +491,106 @@ const privacy: {
       ],
     },
     {
+      id: "mini-app",
+      title: "la mini app",
+      blocks: [
+        {
+          type: "p",
+          segments: [
+            "sotto il riepilogo della partita nel gruppo c'è il pulsante \"apri la lista\". apre la mini app di partitelle: una pagina dentro Telegram dove vedi giorno, ora, campo e descrizione della partita, chi c'è, chi è in forse e le squadre. come nel gruppo, puoi aggiungerti, metterti in forse o toglierti, e puoi fare lo stesso per le altre persone: aggiungerle scrivendo il loro nome, metterle in forse o confermarle, toglierle o scambiarle di squadra.",
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "quando apri la mini app, anche solo per guardare la lista, Telegram invia al server del bot questi dati:",
+          ],
+        },
+        {
+          type: "ul",
+          items: [
+            [
+              "il tuo ID utente Telegram, il nome e il cognome del tuo profilo e il tuo username, se ne hai uno;",
+            ],
+            ["la lingua della tua app Telegram e se hai Telegram Premium;"],
+            ["un link alla tua foto profilo;"],
+            ["se il bot può scriverti in chat privata;"],
+            [
+              "il tipo di chat da cui hai aperto la mini app e un codice che identifica quella chat;",
+            ],
+            ["il codice della partita, che si trova nel pulsante;"],
+            [
+              "la data e l'ora di apertura e una firma di Telegram, che serve a verificare che i dati vengano davvero da Telegram.",
+            ],
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "usiamo solo il tuo ID utente, il nome, lo username e il codice della partita, più la data e la firma per i controlli. tutti gli altri dati vengono scartati: non li salviamo e non li scriviamo nei log. non scarichiamo e non mostriamo mai la tua foto profilo.",
+          ],
+        },
+        { type: "p", segments: ["usiamo questi dati per:"] },
+        {
+          type: "ul",
+          items: [
+            ["verificare, con la firma di Telegram, che sia davvero tu;"],
+            [
+              "mostrare la lista solo a chi è nel gruppo: per questo chiediamo a Telegram se sei membro del gruppo. teniamo la risposta nella memoria del server per circa un minuto e non la salviamo;",
+            ],
+            [
+              "fare quello che chiedi con i pulsanti: aggiungerti, metterti in forse o toglierti, oppure aggiungere, mettere in forse, confermare, togliere o scambiare di squadra altre persone;",
+            ],
+            [
+              "evitare abusi, per esempio troppe richieste in poco tempo. anche questo controllo resta nella memoria del server e non viene salvato.",
+            ],
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            'la mini app non salva niente in più rispetto al bot nel gruppo. se ti aggiungi o ti metti in forse dalla mini app, salviamo gli stessi dati di "aggiungimi" e "proponimi": il nome con cui compari in lista e il tuo ID utente (vedi il ',
+            point3,
+            '). se ti togli, succede lo stesso che con "toglimi". se aggiungi qualcun altro, anche in forse, salviamo solo il nome che scrivi, come con "aggiungi luca" e "proponi luca": nessun ID utente. se togli, sposti o scambi qualcuno, succede lo stesso che con "togli", "proponi", "aggiungi" e "scambia". non salviamo chi ha fatto la modifica. se guardi solo la lista, nel database non salviamo nessun dato su di te.',
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "quando dalla mini app aggiungi, metti in forse, confermi, togli o scambi di squadra un'altra persona, il bot lo scrive nel gruppo con il tuo nome, così nel gruppo si vede chi ha fatto la modifica, come quando scrivi in chat. il tuo nome compare solo in quel messaggio: non lo salviamo insieme alla modifica.",
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "se la mini app incontra un errore tecnico, il log di errore non contiene ID utente, nomi o altri testi scritti nella mini app.",
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "la mini app è servita dal server del bot, ospitato da Render: come per qualsiasi richiesta, Render riceve l'indirizzo IP e il tipo di browser e può tenerli nei suoi log per un periodo limitato. la pagina carica anche uno script di Telegram da telegram.org, come Telegram chiede a chi fa mini app: Telegram riceve a sua volta l'indirizzo IP e il tipo di browser e tratta i dati come titolare autonomo (vedi il ",
+            point9,
+            ").",
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "la mini app non usa cookie e non usa strumenti di analisi o di tracciamento. noi non salviamo nulla sul tuo dispositivo. lo script di Telegram, invece, conserva i dati di apertura della mini app, compresi quelli firmati da Telegram, nella memoria di sessione del browser (sessionStorage) per la durata della sessione.",
+          ],
+        },
+        {
+          type: "p",
+          segments: [
+            "la base giuridica è la stessa di tutto il servizio: il nostro legittimo interesse a farlo funzionare (scopo a del ",
+            point7,
+            "). in fondo alla mini app trovi il link a questa informativa.",
+          ],
+        },
+      ],
+    },
+    {
       id: "decisioni-automatizzate",
       title: "decisioni automatizzate",
       blocks: [
@@ -507,6 +615,9 @@ const privacy: {
         {
           type: "ul",
           items: [
+            [
+              "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
+            ],
             [
               '1 novembre 2026: aggiunto l\'ID utente Telegram tra i dati salvati; riscritti "cosa non facciamo" e il punto 7 d); aggiunto cosa succede ai dati se partitelle passa ad altri; descritti meglio i messaggi che il bot legge, i dati salvati, quelli delle versioni precedenti e i log.',
             ],

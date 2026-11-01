@@ -19,8 +19,9 @@ const HEADINGS = [
   "12. i tuoi diritti",
   "13. nomi aggiunti da altri e minori",
   "14. il sito partitelle.com",
-  "15. decisioni automatizzate",
-  "16. modifiche",
+  "15. la mini app",
+  "16. decisioni automatizzate",
+  "17. modifiche",
 ];
 
 for (const path of ["/privacy/", "/privacy"]) {
@@ -34,13 +35,13 @@ for (const path of ["/privacy/", "/privacy"]) {
   });
 }
 
-test("has the 16 sections in order, with the update date", async ({ page }) => {
+test("has the 17 sections in order, with the update date", async ({ page }) => {
   await page.goto("/privacy/");
   await expect(page.getByRole("heading", { level: 2 })).toHaveText(HEADINGS);
   await expect(page.locator("main")).toContainText(
-    "ultimo aggiornamento: 1 novembre 2026",
+    "ultimo aggiornamento: 2 novembre 2026",
   );
-  await expect(page.locator("time")).toHaveAttribute("datetime", "2026-11-01");
+  await expect(page.locator("time")).toHaveAttribute("datetime", "2026-11-02");
   await expect(page.locator("time")).toHaveAttribute(
     "datetime",
     /^\d{4}-\d{2}-\d{2}$/,
@@ -54,7 +55,7 @@ test("every index link targets an existing section", async ({ page }) => {
     .getByRole("navigation", { name: "indice" })
     .getByRole("link")
     .evaluateAll((els) => els.map((el) => el.getAttribute("href")));
-  expect(hrefs).toHaveLength(16);
+  expect(hrefs).toHaveLength(17);
   for (const href of hrefs) {
     await expect(page.locator(href as string)).toHaveCount(1);
     await expect(page.locator(href as string)).toHaveRole("heading");
@@ -104,6 +105,74 @@ test("links go where the notice says", async ({ page }) => {
   ).toHaveAttribute("href", "#cosa-non-facciamo");
 });
 
+test("the mini app section sits at point 15 and is linked from points 3 and 6", async ({
+  page,
+}) => {
+  await page.goto("/privacy/");
+  const index = page.getByRole("navigation", { name: "indice" });
+  await expect(
+    index.getByRole("link", { name: "15. la mini app" }),
+  ).toHaveAttribute("href", "#mini-app");
+  await expect(page.locator("#mini-app")).toHaveCount(1);
+  await expect(page.locator("#mini-app")).toHaveRole("heading");
+  await expect(page.locator("#mini-app")).toHaveText("15. la mini app");
+  const section = page.locator('section[aria-labelledby="mini-app"]');
+  await expect(section).toContainText(
+    'sotto il riepilogo della partita nel gruppo c\'è il pulsante "apri la lista".',
+  );
+  await expect(section).toContainText(
+    "puoi fare lo stesso per le altre persone",
+  );
+  await expect(section).toContainText(
+    "non scarichiamo e non mostriamo mai la tua foto profilo.",
+  );
+  await expect(section).toContainText("(sessionStorage)");
+  // the section sits right after "il sito"
+  await expect(
+    page.locator('section[aria-labelledby="il-sito"] + section'),
+  ).toHaveAttribute("aria-labelledby", "mini-app");
+  // inside the section: points 3, 9 and 7 resolve
+  await expect(section.getByRole("link", { name: "punto 3" })).toHaveAttribute(
+    "href",
+    "#dati-salvati",
+  );
+  await expect(section.getByRole("link", { name: "punto 9" })).toHaveAttribute(
+    "href",
+    "#chi-altro-tratta-i-dati",
+  );
+  await expect(section.getByRole("link", { name: "punto 7" })).toHaveAttribute(
+    "href",
+    "#perche-li-usiamo",
+  );
+  // points 3 and 6 link to point 15
+  for (const id of ["dati-salvati", "da-dove-arrivano"]) {
+    const link = page
+      .locator(`section[aria-labelledby="${id}"]`)
+      .getByRole("link", { name: "punto 15" });
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute("href", "#mini-app");
+  }
+  // clicking the link in point 3 lands on the mini app heading
+  await page
+    .locator('section[aria-labelledby="dati-salvati"]')
+    .getByRole("link", { name: "punto 15" })
+    .click();
+  await expect(page).toHaveURL(/\/privacy\/?#mini-app$/);
+  await expect(page.locator("#mini-app")).toBeInViewport();
+  // the mini app link to point 3 lands on point 3
+  await section.getByRole("link", { name: "punto 3" }).click();
+  await expect(page).toHaveURL(/\/privacy\/?#dati-salvati$/);
+  await expect(page.locator("#dati-salvati")).toBeInViewport();
+});
+
+test("the mini app change is the first changelog line", async ({ page }) => {
+  await page.goto("/privacy/");
+  const first = page.locator('section[aria-labelledby="modifiche"] li').first();
+  await expect(first).toHaveText(
+    "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
+  );
+});
+
 test("names the controller", async ({ page }) => {
   await page.goto("/privacy/");
   await expect(
@@ -148,7 +217,7 @@ test("declares the /status exception and the Render role", async ({ page }) => {
   await expect(
     page.locator('section[aria-labelledby="chi-altro-tratta-i-dati"]'),
   ).toContainText(
-    "Render (Render Services, Inc., USA): ospita il server del bot e i suoi log, e risponde alla pagina /status del sito.",
+    "Render (Render Services, Inc., USA): ospita il server del bot, la mini app e i loro log, e risponde alla pagina /status del sito.",
   );
   await expect(
     page.getByText(
