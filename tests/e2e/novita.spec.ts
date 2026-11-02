@@ -280,7 +280,7 @@ test.describe("quality", () => {
     });
   }
 
-  test("pages load nothing from other origins and no script but the status dot", async ({
+  test("pages load nothing from other origins and no script", async ({
     page,
     baseURL,
   }) => {
@@ -296,10 +296,9 @@ test.describe("quality", () => {
       await page.waitForLoadState("networkidle");
       page.off("request", onRequest);
       expect([...origins], path).toEqual([new URL(baseURL as string).origin]);
-      // The header's status indicator is the only script on these pages.
-      const scripts = page.locator('script:not([type="application/ld+json"])');
-      await expect(scripts).toHaveCount(1);
-      await expect(scripts).toHaveAttribute("type", "module");
+      await expect(
+        page.locator('script:not([type="application/ld+json"])'),
+      ).toHaveCount(0);
     }
   });
 
