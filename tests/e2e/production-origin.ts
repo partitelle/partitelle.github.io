@@ -92,6 +92,8 @@ export async function openInState(
   state: DotState,
 ): Promise<Bot> {
   await serveAsProduction(page, baseURL);
+  // A test that visits several states with one page starts each from scratch.
+  await page.addInitScript(() => sessionStorage.clear());
   await page.clock.install({ time: CLOCK_START });
   const bot = await mockBot(
     page,
