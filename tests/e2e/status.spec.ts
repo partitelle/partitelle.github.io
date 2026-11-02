@@ -532,7 +532,12 @@ test.describe("head and footer", () => {
       const order = await footer
         .locator("a")
         .evaluateAll((els) => els.map((el) => el.textContent?.trim()));
-      expect(order.slice(0, 3)).toEqual(["github", "privacy", "stato"]);
+      expect(order.slice(0, 4)).toEqual([
+        "novità",
+        "stato",
+        "privacy",
+        "github",
+      ]);
     });
   }
 

@@ -6,7 +6,14 @@
       "settings": {
         "chromeFlags": "--no-sandbox",
         "blockedUrlPatterns": ["https://partitelle-bot.onrender.com/*"]
-      }
+      },
+      "url": [
+        "/index.html",
+        "/privacy/index.html",
+        "/status/index.html",
+        "/novita/index.html",
+        "/novita/arriva-la-mini-app/index.html"
+      ]
     },
     "assert": {
       "assertions": {

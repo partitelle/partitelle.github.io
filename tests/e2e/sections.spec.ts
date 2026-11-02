@@ -25,6 +25,7 @@ test("both sections are named regions with the right heading outline", async ({
     "come funziona",
     "provalo",
     "cosa fa",
+    "novità",
     "mercoledì si gioca. al resto pensa il bot.",
   ]);
   const h3 = page.locator("#come-funziona").getByRole("heading", { level: 3 });
@@ -41,7 +42,7 @@ test("both sections are named regions with the right heading outline", async ({
     "in forse? il posto resta tuo",
     "squadre sorteggiate, ritocchi con una riga",
   ]);
-  await expect(page.getByRole("heading", { level: 3 })).toHaveCount(6);
+  await expect(page.getByRole("heading", { level: 3 })).toHaveCount(9);
 });
 
 test("features section has three tiles and the compact summary", async ({

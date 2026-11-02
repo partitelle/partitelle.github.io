@@ -1,0 +1,86 @@
+---
+import { getCollection, render } from "astro:content";
+import CategoryBadge from "../../components/CategoryBadge.astro";
+import FinalCtaSection from "../../components/FinalCtaSection.astro";
+import Footer from "../../components/Footer.astro";
+import NewsItem from "../../components/NewsItem.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import { it } from "../../i18n/it";
+import Base from "../../layouts/Base.astro";
+import { formatDate, isoDate, neighbours, sortPosts } from "../../lib/news";
+
+export async function getStaticPaths() {
+  const posts = sortPosts(
+    await getCollection("novita", ({ data }) => !data.draft),
+  );
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, others: neighbours(posts, post.id) },
+  }));
+}
+
+const { post, others } = Astro.props;
+const { title, lede, category, date, changes, version, product, backfill } =
+  post.data;
+const { Content } = await render(post);
+const hasBody = (post.body ?? "").trim() !== "";
+const n = it.news;
+const text = "text-base leading-relaxed lg:text-xl";
+---
+<Base
+  title={`${title} · partitelle`}
+  description={lede}
+  canonical={`https://partitelle.com/novita/${post.id}/`}
+  ogType="article"
+  publishedTime={backfill ? undefined : date}
+>
+  <div class="bg-yellow text-black">
+    <SiteHeader />
+  </div>
+  <main>
+    <article aria-labelledby="post-title">
+      <header class="bg-yellow text-black">
+        <div class="mx-auto w-full max-w-7xl px-6 pb-12 pt-6 lg:px-12 lg:pb-16">
+          <a href={it.links.news} class="inline-flex min-h-12 items-center underline underline-offset-4 hover:decoration-2">{n.back}</a>
+          <div class="mt-6 flex items-center gap-4">
+            <CategoryBadge category={category} size="lg" surface="yellow" />
+            <p class="text-base text-muted"><span>{n.categories[category]}</span> · <time datetime={isoDate(date)}>{formatDate(date)}</time></p>
+          </div>
+          <h1 id="post-title" class="mt-6 max-w-4xl text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-[4rem]">{title}</h1>
+          <p class="mt-6 max-w-[34rem] text-xl leading-relaxed text-muted">{lede}</p>
+        </div>
+      </header>
+      <div class="bg-white text-black">
+        <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:px-12 lg:py-24">
+          <div class="max-w-prose">
+            <h2 class="text-2xl leading-[1.1] text-balance lg:text-4xl">{n.changesTitle}</h2>
+            <ul class={`mt-6 list-disc space-y-2 pl-6 marker:text-black ${text}`}>
+              {changes.map((change) => <li>{change}</li>)}
+            </ul>
+            {hasBody && <div class={`mt-8 space-y-4 ${text}`}><Content /></div>}
+            {
+              (version || backfill) && (
+                <div class="mt-12 space-y-2 border-t border-black/12 pt-6 text-sm text-muted">
+                  {version && <p>{n.versionLabel[product ?? "bot"]}{version}</p>}
+                  {backfill && <p>{n.backfillMarker}</p>}
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </article>
+    <nav aria-label={n.otherNews} class="bg-white text-black">
+      <div class="mx-auto w-full max-w-7xl px-6 pb-16 lg:px-12 lg:pb-24">
+        <div class="max-w-[48rem]">
+          <p class="text-sm text-muted">{n.otherNews}</p>
+          <div class="mt-4">
+            {others.map((other) => <NewsItem post={other} headingLevel="h2" />)}
+          </div>
+        </div>
+      </div>
+    </nav>
+    <FinalCtaSection />
+  </main>
+  <Footer />
+</Base>

@@ -1,0 +1,26 @@
+---
+import { getCollection } from "astro:content";
+import { it } from "../i18n/it";
+import { sortPosts } from "../lib/news";
+import NewsItem from "./NewsItem.astro";
+import SectionLabel from "./SectionLabel.astro";
+
+const posts = sortPosts(
+  await getCollection("novita", ({ data }) => !data.draft),
+).slice(0, 3);
+const link =
+  "min-h-12 items-center underline underline-offset-4 hover:decoration-2";
+---
+<section id="novita" aria-labelledby="novita-label" class="bg-white text-black">
+  <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:grid lg:grid-cols-12 lg:gap-12 lg:px-12 lg:py-24">
+    <div class="lg:col-span-4">
+      <SectionLabel id="novita-label">{it.news.teaser.label}</SectionLabel>
+      <p class="mt-6 text-4xl font-bold leading-[1.05] tracking-[-0.03em] text-balance lg:text-5xl">{it.news.teaser.statement}</p>
+      <a href={it.links.news} class={`${link} mt-6 hidden lg:inline-flex`}>{it.news.allNews}</a>
+    </div>
+    <div class="mt-8 lg:col-span-8 lg:mt-0">
+      {posts.map((post) => <NewsItem post={post} headingLevel="h3" />)}
+      <a href={it.links.news} class={`${link} mt-4 inline-flex lg:hidden`}>{it.news.allNews}</a>
+    </div>
+  </div>
+</section>

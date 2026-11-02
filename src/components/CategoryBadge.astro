@@ -1,0 +1,41 @@
+---
+import app from "../icons/categories/icon-app.svg?raw";
+import giocatori from "../icons/categories/icon-giocatori.svg?raw";
+import partita from "../icons/categories/icon-partita.svg?raw";
+import privacy from "../icons/categories/icon-privacy.svg?raw";
+import promemoria from "../icons/categories/icon-promemoria.svg?raw";
+import sito from "../icons/categories/icon-sito.svg?raw";
+import squadre from "../icons/categories/icon-squadre.svg?raw";
+import type { Category } from "../lib/news";
+
+interface Props {
+  category: Category;
+  size?: "md" | "lg";
+  surface?: "light" | "yellow";
+}
+
+const icons: Record<Category, string> = {
+  partita,
+  giocatori,
+  squadre,
+  promemoria,
+  app,
+  privacy,
+  sito,
+};
+
+const { category, size = "md", surface = "light" } = Astro.props;
+const sizes = {
+  md: "size-12 [&>svg]:size-7",
+  lg: "size-16 [&>svg]:size-9",
+};
+const surfaces = {
+  light: "bg-yellow text-black",
+  yellow: "bg-black text-yellow",
+};
+---
+<span
+  aria-hidden="true"
+  class:list={["inline-flex shrink-0 items-center justify-center rounded-pill", sizes[size], surfaces[surface]]}
+  set:html={icons[category]}
+/>

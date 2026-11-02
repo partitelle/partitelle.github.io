@@ -1,0 +1,44 @@
+---
+import { getCollection } from "astro:content";
+import Footer from "../../components/Footer.astro";
+import NewsItem from "../../components/NewsItem.astro";
+import SiteHeader from "../../components/SiteHeader.astro";
+import { it } from "../../i18n/it";
+import Base from "../../layouts/Base.astro";
+import { groupByYear, sortPosts } from "../../lib/news";
+
+const n = it.news;
+const years = groupByYear(
+  sortPosts(await getCollection("novita", ({ data }) => !data.draft)),
+);
+const hasBackfill = years.some((g) => g.posts.some((p) => p.data.backfill));
+---
+<Base title={n.meta.title} description={n.meta.description} canonical="https://partitelle.com/novita/">
+  <div class="bg-yellow text-black">
+    <SiteHeader />
+  </div>
+  <main>
+    <section aria-labelledby="news-title" class="bg-yellow text-black">
+      <div class="mx-auto w-full max-w-7xl px-6 pb-12 pt-6 lg:px-12 lg:pb-16">
+        <h1 id="news-title" class="text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-[4rem]">{n.title}</h1>
+        <p class="mt-6 max-w-[34rem] text-xl leading-relaxed text-muted">{n.lead}</p>
+      </div>
+    </section>
+    <div class="bg-white text-black">
+      <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:px-12 lg:py-24">
+        {
+          years.map((group) => (
+            <section aria-labelledby={`anno-${group.year}`} class="mt-16 first:mt-0 lg:mt-24 lg:grid lg:grid-cols-12 lg:gap-12">
+              <h2 id={`anno-${group.year}`} class="text-2xl leading-[1.1] lg:sticky lg:top-8 lg:col-span-3 lg:self-start lg:text-4xl">{group.year}</h2>
+              <div class="mt-4 max-w-[48rem] lg:col-span-9 lg:mt-0">
+                {group.posts.map((post) => <NewsItem post={post} headingLevel="h3" />)}
+              </div>
+            </section>
+          ))
+        }
+        {hasBackfill && <p class="mt-16 max-w-prose border-t border-black/12 pt-8 text-sm text-muted">{n.backfillNote}</p>}
+      </div>
+    </div>
+  </main>
+  <Footer />
+</Base>
