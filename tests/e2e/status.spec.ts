@@ -264,7 +264,7 @@ test.describe("retry", () => {
 });
 
 test.describe("what the page does and does not do", () => {
-  test("one request on load, no params, no cookies, local storage untouched, no polling", async ({
+  test("one request on load, no params, no cookies or storage, no polling", async ({
     page,
   }) => {
     const health = await mockHealth(page, (route) =>
@@ -279,11 +279,7 @@ test.describe("what the page does and does not do", () => {
       local: localStorage.length,
       session: sessionStorage.length,
     }));
-    // The result is kept for this tab only, so the header can show it.
-    expect(storage).toEqual({ local: 0, session: 1 });
-    expect(await page.evaluate(() => Object.keys(sessionStorage))).toEqual([
-      "partitelle.health",
-    ]);
+    expect(storage).toEqual({ local: 0, session: 0 });
   });
 
   test("sends the request without cookies, referrer or cache", async ({
@@ -331,6 +327,17 @@ test.describe("what the page does and does not do", () => {
     const text = (await page.locator("body").textContent()) ?? "";
     expect(text).not.toContain(VERSION);
     expect(text).not.toContain("onrender.com");
+  });
+
+  test("makes no request to the bot on other pages", async ({ page }) => {
+    const health = await mockHealth(page, (route) =>
+      route.fulfill(responses.up()),
+    );
+    for (const path of ["/", "/privacy/"]) {
+      await page.goto(path);
+      await page.waitForLoadState("networkidle");
+    }
+    expect(health.count()).toBe(0);
   });
 
   test("without JavaScript it says it needs JavaScript", async ({
@@ -533,19 +540,6 @@ test.describe("head and footer", () => {
       ]);
     });
   }
-
-  test("the 'how it works' text says where the check starts", async ({
-    page,
-  }) => {
-    await mockHealth(page, (route) => route.fulfill(responses.up()));
-    await page.goto("/status/");
-    await expect(page.getByRole("main")).toContainText(
-      'il controllo parte dal tuo browser: quando apri il sito, quando apri questa pagina o quando premi "controlla di nuovo". non facciamo controlli programmati dal nostro lato e non teniamo uno storico: vedi solo com\'è adesso.',
-    );
-    await expect(page.getByRole("main")).not.toContainText(
-      "controlli automatici",
-    );
-  });
 
   test("the 'how it works' text links to the privacy section", async ({
     page,

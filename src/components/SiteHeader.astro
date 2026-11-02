@@ -1,7 +1,6 @@
 ---
 import { it } from "../i18n/it";
 import { navLink, ctaPill as pill } from "../lib/classes";
-import HealthDot from "./HealthDot.astro";
 
 const path = Astro.url.pathname.replace(/\/$/, "");
 const newsHref = it.links.news;
@@ -19,16 +18,9 @@ const statusCurrent = isPage(statusHref) ? "page" : undefined;
     <ul class="flex items-center gap-6">
       <li><a href={newsHref} class={navLink} aria-current={newsCurrent}>{it.news.navNews}</a></li>
       <li>
-        <a
-          href={statusHref}
-          class={`${navLink} gap-2`}
-          aria-current={statusCurrent}
-          aria-label={it.status.dot.label}
-          title={it.status.dot.label}
-          data-health-link
-        >
-          <HealthDot />
+        <a href={statusHref} class={`${navLink} gap-2`} aria-current={statusCurrent}>
           {it.news.navStatus}
+          {/* A small status indicator can be added here, inside this link, without moving the other items. */}
         </a>
       </li>
     </ul>
