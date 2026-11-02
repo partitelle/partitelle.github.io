@@ -1,10 +1,29 @@
 ---
 import { it } from "../i18n/it";
-import { ctaPill as pill } from "../lib/classes";
+import { navLink, ctaPill as pill } from "../lib/classes";
+
+const path = Astro.url.pathname.replace(/\/$/, "");
+const newsHref = it.links.news;
+const statusHref = `${it.links.status}/`;
+const isPage = (href: string) => path === href.replace(/\/$/, "");
+const inNews = path.startsWith(`${newsHref.replace(/\/$/, "")}/`);
+const newsCurrent = isPage(newsHref) ? "page" : inNews ? "true" : undefined;
+const statusCurrent = isPage(statusHref) ? "page" : undefined;
 ---
-<header class="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-6 py-6 lg:px-12">
+<header class="mx-auto flex w-full max-w-7xl flex-wrap items-center justify-between gap-x-4 px-6 pt-6 pb-4 sm:pb-6 lg:px-12">
   <a href="/" class="inline-flex min-h-12 items-center" aria-label={it.site.name}>
     <img src="/brand/logo-lockup.svg" alt="" width="869" height="200" class="h-8 w-auto sm:h-10" />
   </a>
+  <nav aria-label={it.news.navLabel} class="order-last basis-full sm:order-none sm:ml-auto sm:basis-auto">
+    <ul class="flex items-center gap-6">
+      <li><a href={newsHref} class={navLink} aria-current={newsCurrent}>{it.news.navNews}</a></li>
+      <li>
+        <a href={statusHref} class={`${navLink} gap-2`} aria-current={statusCurrent}>
+          {it.news.navStatus}
+          {/* A small status indicator can be added here, inside this link, without moving the other items. */}
+        </a>
+      </li>
+    </ul>
+  </nav>
   <a href={it.links.bot} class={`${pill} text-base`}>{it.hero.ctaSmall}</a>
 </header>

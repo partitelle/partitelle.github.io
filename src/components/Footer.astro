@@ -3,7 +3,7 @@ import { it } from "../i18n/it";
 
 const year = new Date().getFullYear();
 const path = Astro.url.pathname.replace(/\/$/, "");
-const isCurrent = (href: string) => path === href;
+const isCurrent = (href: string) => path === href.replace(/\/$/, "");
 ---
 <footer class="on-dark bg-black text-white">
   <div class="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-12 lg:px-12">
@@ -11,10 +11,16 @@ const isCurrent = (href: string) => path === href;
     <p class="max-w-[34rem] text-lg">{it.footer.tagline}</p>
     <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
       <a
-        href={it.links.github}
+        href={it.links.news}
         class="inline-flex min-h-12 items-center text-white underline underline-offset-4"
-        aria-label={it.footer.github}
-      >{it.footer.githubLabel}</a>
+        aria-current={isCurrent(it.links.news) ? "page" : undefined}
+      >{it.footer.newsLabel}</a>
+      <a
+        href={it.links.status}
+        class="inline-flex min-h-12 items-center text-white underline underline-offset-4"
+        aria-label={it.footer.status}
+        aria-current={isCurrent(it.links.status) ? "page" : undefined}
+      >{it.footer.statusLabel}</a>
       <a
         href={it.links.privacy}
         class="inline-flex min-h-12 items-center text-white underline underline-offset-4"
@@ -22,11 +28,10 @@ const isCurrent = (href: string) => path === href;
         aria-current={isCurrent(it.links.privacy) ? "page" : undefined}
       >{it.footer.privacyLabel}</a>
       <a
-        href={it.links.status}
+        href={it.links.github}
         class="inline-flex min-h-12 items-center text-white underline underline-offset-4"
-        aria-label={it.footer.status}
-        aria-current={isCurrent(it.links.status) ? "page" : undefined}
-      >{it.footer.statusLabel}</a>
+        aria-label={it.footer.github}
+      >{it.footer.githubLabel}</a>
       <p>© {year} {it.site.name} · {it.footer.rights}</p>
     </div>
   </div>

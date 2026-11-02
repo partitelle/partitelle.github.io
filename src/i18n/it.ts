@@ -685,6 +685,40 @@ const status = {
   },
 } as const;
 
+const news = {
+  meta: {
+    title: "novità · partitelle",
+    description: "cosa cambia nel bot e sul sito, spiegato in breve.",
+  },
+  title: "novità",
+  lead: "cosa cambia nel bot e sul sito, spiegato in breve. le più recenti sono in alto.",
+  backfillNote:
+    "abbiamo aperto questa pagina a novembre 2026. le novità precedenti le abbiamo scritte dopo, ripercorrendo la storia del bot.",
+  backfillMarker:
+    "questa novità l'abbiamo scritta a novembre 2026, ripercorrendo la storia del bot.",
+  navLabel: "sezioni",
+  navNews: "novità",
+  navStatus: "stato",
+  back: "← tutte le novità",
+  allNews: "tutte le novità",
+  otherNews: "altre novità",
+  changesTitle: "cosa cambia per te",
+  versionLabel: { bot: "versione del bot: ", sito: "versione del sito: " },
+  categories: {
+    partita: "partita",
+    giocatori: "chi gioca",
+    squadre: "squadre",
+    promemoria: "promemoria",
+    app: "app",
+    privacy: "privacy",
+    sito: "sito",
+  },
+  teaser: {
+    label: "novità",
+    statement: "il bot cresce. ecco cosa è cambiato.",
+  },
+} as const;
+
 export const it = {
   site: {
     name: "partitelle",
@@ -855,16 +889,19 @@ export const it = {
     logoAlt: "partitelle",
     privacyLabel: "privacy",
     privacy: "informativa privacy",
+    newsLabel: "novità",
     statusLabel: "stato",
     status: "stato del bot",
   },
   links: {
     bot: "https://t.me/PartitelleBot?startgroup=true",
     github: "https://github.com/partitelle",
+    news: "/novita/",
     privacy: "/privacy",
     status: "/status",
     health: "https://partitelle-bot.onrender.com/health",
   },
   status,
   privacy,
+  news,
 } as const;
