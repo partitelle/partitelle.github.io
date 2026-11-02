@@ -17,47 +17,14 @@
     },
     "assert": {
       "assertions": {
-        "categories:performance": [
-          "error",
-          {
-            "minScore": 0.95
-          }
-        ],
-        "categories:accessibility": [
-          "error",
-          {
-            "minScore": 0.95
-          }
-        ],
-        "categories:best-practices": [
-          "error",
-          {
-            "minScore": 0.95
-          }
-        ],
-        "categories:seo": [
-          "error",
-          {
-            "minScore": 0.95
-          }
-        ],
-        "total-byte-weight": [
-          "error",
-          {
-            "maxNumericValue": 150000
-          }
-        ],
-        "resource-summary:script:size": [
-          "error",
-          {
-            "maxNumericValue": 10000
-          }
-        ]
+        "categories:performance": ["error", { "minScore": 0.95 }],
+        "categories:accessibility": ["error", { "minScore": 0.95 }],
+        "categories:best-practices": ["error", { "minScore": 0.95 }],
+        "categories:seo": ["error", { "minScore": 0.95 }],
+        "total-byte-weight": ["error", { "maxNumericValue": 150000 }],
+        "resource-summary:script:size": ["error", { "maxNumericValue": 10000 }]
       }
     },
-    "upload": {
-      "target": "filesystem",
-      "outputDir": ".lighthouseci"
-    }
+    "upload": { "target": "filesystem", "outputDir": ".lighthouseci" }
   }
 }
