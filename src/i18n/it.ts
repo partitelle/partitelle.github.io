@@ -314,7 +314,7 @@ const privacy: {
           type: "ul",
           items: [
             [
-              "Render (Render Services, Inc., USA): ospita il server del bot, la mini app e i loro log, e risponde alla pagina /status del sito.",
+              "Render (Render Services, Inc., USA): ospita il server del bot, la mini app e i loro log, e risponde al controllo dello stato del bot che parte dalle pagine del sito.",
             ],
             [
               "Neon (Neon, LLC, del gruppo Databricks, USA): ospita il database, su server Amazon Web Services a Francoforte (Germania).",
@@ -468,7 +468,9 @@ const privacy: {
         {
           type: "p",
           segments: [
-            'il sito non usa cookie, non usa strumenti di analisi o di tracciamento e non carica risorse da altri siti (i caratteri sono ospitati sul sito stesso). unica eccezione: quando apri la pagina /status o premi "controlla di nuovo", il tuo browser chiede al server del bot, ospitato da Render, se è attivo. come per qualsiasi richiesta, Render riceve l\'indirizzo IP e il tipo di browser e può tenerli nei suoi log per un periodo limitato. la risposta non contiene dati personali e la pagina non salva nulla sul tuo dispositivo.',
+            'il sito non usa cookie, non usa strumenti di analisi o di tracciamento e non carica risorse da altri siti (i caratteri sono ospitati sul sito stesso). unica eccezione: lo stato del bot. per mostrare il pallino di stato in alto, il tuo browser chiede al server del bot, ospitato da Render, se è attivo, al massimo una volta ogni 10 minuti; lo chiede di nuovo quando apri la pagina /status o premi "controlla di nuovo". come per qualsiasi richiesta, Render riceve l\'indirizzo IP e il tipo di browser e può tenerli nei suoi log per un periodo limitato. la richiesta non dice quale pagina stai leggendo e la risposta non contiene dati personali. lo facciamo per mostrarti se il bot funziona, sulla base del nostro legittimo interesse (vedi il ',
+            point7,
+            "). per non ripetere la domanda a ogni pagina, il sito salva l'esito e l'ora del controllo nella memoria di sessione del browser (sessionStorage), che si cancella quando chiudi la scheda. non salva nient'altro sul tuo dispositivo.",
           ],
         },
         {
@@ -616,6 +618,9 @@ const privacy: {
           type: "ul",
           items: [
             [
+              "2 novembre 2026: il controllo dello stato del bot parte ora da ogni pagina del sito, per il pallino di stato in alto, e il risultato resta nella memoria di sessione del browser; aggiornati di conseguenza i punti 9 e 14.",
+            ],
+            [
               "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
             ],
             [
@@ -633,7 +638,7 @@ const privacy: {
 
 const howParagraphs: readonly (readonly Segment[])[] = [
   [
-    'il controllo parte dal tuo browser quando apri la pagina o quando premi "controlla di nuovo". non facciamo controlli automatici e non teniamo uno storico: vedi solo com\'è adesso.',
+    'il controllo parte dal tuo browser: quando apri il sito, quando apri questa pagina o quando premi "controlla di nuovo". non facciamo controlli programmati dal nostro lato e non teniamo uno storico: vedi solo com\'è adesso.',
   ],
   [
     "se nessuno usa il bot da un po', il bot va in pausa. la prima richiesta lo risveglia e può metterci fino a un minuto: è normale.",
@@ -676,6 +681,11 @@ const status = {
     },
   },
   checkedAt: "controllato alle",
+  dot: {
+    label: "stato del bot",
+    slow: "il bot ci mette un po' a rispondere, forse si sta svegliando",
+    checkedAt: "controllato alle",
+  },
   button: "controlla di nuovo",
   noscript:
     "per controllare lo stato del bot, questa pagina ha bisogno di JavaScript.",
