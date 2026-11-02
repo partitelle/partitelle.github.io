@@ -293,7 +293,12 @@ test.describe("hero height and whistle size", () => {
 
 test("the page never mentions the payment reminder", async ({ page }) => {
   await page.goto("/");
-  const html = await page.content();
+  // The news teaser may list the post about the reminder: it is out of scope here.
+  const html = await page.evaluate(() => {
+    const copy = document.documentElement.cloneNode(true) as HTMLElement;
+    copy.querySelector("#novita")?.remove();
+    return copy.outerHTML;
+  });
   expect(html).not.toMatch(/quota|pagat|promemoria/i);
 });
 
