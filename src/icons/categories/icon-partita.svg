@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="96 96 320 320" width="512" height="512" fill="currentColor" role="img" aria-hidden="true">
+  <path fill-rule="evenodd" d="M152 136H360A40 40 0 0 1 400 176V360A40 40 0 0 1 360 400H152A40 40 0 0 1 112 360V176A40 40 0 0 1 152 136ZM160 216H352A16 16 0 0 1 368 232V352A16 16 0 0 1 352 368H160A16 16 0 0 1 144 352V232A16 16 0 0 1 160 216Z"/>
+  <rect x="168" y="100" width="40" height="72" rx="20"/>
+  <rect x="304" y="100" width="40" height="72" rx="20"/>
+  <rect x="272" y="280" width="64" height="56" rx="12"/>
+</svg>

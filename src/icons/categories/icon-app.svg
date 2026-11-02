@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="96 96 320 320" width="512" height="512" fill="currentColor" role="img" aria-hidden="true">
+  <path fill-rule="evenodd" d="M204 96H308A44 44 0 0 1 352 140V372A44 44 0 0 1 308 416H204A44 44 0 0 1 160 372V140A44 44 0 0 1 204 96ZM204 132H308A16 16 0 0 1 324 148V332A16 16 0 0 1 308 348H204A16 16 0 0 1 188 332V148A16 16 0 0 1 204 132ZM238 372H274A10 10 0 0 1 284 382V382A10 10 0 0 1 274 392H238A10 10 0 0 1 228 382V382A10 10 0 0 1 238 372Z"/>
+  <rect x="208" y="164" width="96" height="32" rx="16"/>
+  <rect x="208" y="220" width="64" height="32" rx="16"/>
+  <rect x="208" y="276" width="80" height="32" rx="16"/>
+</svg>
