@@ -1,5 +1,12 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import {
+  CLOCK_START,
+  HEALTH,
+  mockBot,
+  SITE,
+  serveAsProduction,
+} from "./production-origin";
 
 const SITE_URL = "https://partitelle.com/";
 const PRIVACY_URL = "https://partitelle.com/privacy/";
@@ -165,10 +172,15 @@ test("the mini app section sits at point 15 and is linked from points 3 and 6", 
   await expect(page.locator("#dati-salvati")).toBeInViewport();
 });
 
-test("the mini app change is the first changelog line", async ({ page }) => {
+test("the status check change is the first changelog line, the mini app change the second", async ({
+  page,
+}) => {
   await page.goto("/privacy/");
-  const first = page.locator('section[aria-labelledby="modifiche"] li').first();
-  await expect(first).toHaveText(
+  const lines = page.locator('section[aria-labelledby="modifiche"] li');
+  await expect(lines.nth(0)).toHaveText(
+    "2 novembre 2026: il controllo dello stato del bot parte ora da ogni pagina del sito, per il pallino di stato in alto, e il risultato resta nella memoria di sessione del browser; aggiornati di conseguenza i punti 9 e 14.",
+  );
+  await expect(lines.nth(1)).toHaveText(
     "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
   );
 });
@@ -207,17 +219,19 @@ test("carries the agreed wording of the final copy", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("declares the /status exception and the Render role", async ({ page }) => {
+test("declares the bot status check exception and the Render role", async ({
+  page,
+}) => {
   await page.goto("/privacy/");
   await expect(
     page.locator('section[aria-labelledby="il-sito"]'),
   ).toContainText(
-    'il sito non usa cookie, non usa strumenti di analisi o di tracciamento e non carica risorse da altri siti (i caratteri sono ospitati sul sito stesso). unica eccezione: quando apri la pagina /status o premi "controlla di nuovo", il tuo browser chiede al server del bot, ospitato da Render, se è attivo. come per qualsiasi richiesta, Render riceve l\'indirizzo IP e il tipo di browser e può tenerli nei suoi log per un periodo limitato. la risposta non contiene dati personali e la pagina non salva nulla sul tuo dispositivo.',
+    "il sito non usa cookie, non usa strumenti di analisi o di tracciamento e non carica risorse da altri siti (i caratteri sono ospitati sul sito stesso). unica eccezione: lo stato del bot. per mostrare il pallino di stato in alto, il tuo browser chiede al server del bot, ospitato da Render, se è attivo, al massimo una volta ogni 10 minuti; lo chiede di nuovo quando apri la pagina /status o premi \"controlla di nuovo\". come per qualsiasi richiesta, Render riceve l'indirizzo IP e il tipo di browser e può tenerli nei suoi log per un periodo limitato. la richiesta non dice quale pagina stai leggendo e la risposta non contiene dati personali. lo facciamo per mostrarti se il bot funziona, sulla base del nostro legittimo interesse (vedi il punto 7). per non ripetere la domanda a ogni pagina, il sito salva l'esito e l'ora del controllo nella memoria di sessione del browser (sessionStorage), che si cancella quando chiudi la scheda. non salva nient'altro sul tuo dispositivo.",
   );
   await expect(
     page.locator('section[aria-labelledby="chi-altro-tratta-i-dati"]'),
   ).toContainText(
-    "Render (Render Services, Inc., USA): ospita il server del bot, la mini app e i loro log, e risponde alla pagina /status del sito.",
+    "Render (Render Services, Inc., USA): ospita il server del bot, la mini app e i loro log, e risponde al controllo dello stato del bot che parte dalle pagine del sito.",
   );
   await expect(
     page.getByText(
@@ -242,15 +256,39 @@ test("ships no placeholder or internal word", async ({ page }) => {
   await expect(page.locator("time")).not.toContainText("XX");
 });
 
-test("loads no external resource", async ({ page }) => {
-  const external: string[] = [];
-  page.on("request", (request) => {
-    const url = new URL(request.url());
-    if (url.hostname !== "localhost") external.push(request.url());
-  });
+test("loads no external resource, on localhost or on the production origin", async ({
+  page,
+  baseURL,
+}) => {
+  const external = (list: string[]) => (request: { url(): string }) => {
+    const { hostname } = new URL(request.url());
+    if (hostname !== "localhost" && hostname !== "partitelle.com") {
+      list.push(request.url());
+    }
+  };
+
+  // Anywhere but partitelle.com: no request outside the site at all.
+  const local: string[] = [];
+  page.on("request", external(local));
+  const localBot = await mockBot(page, "ok");
   await page.goto("/privacy/");
   await page.waitForLoadState("networkidle");
-  expect(external).toEqual([]);
+  expect(local).toEqual([]);
+  expect(localBot.count()).toBe(0);
+  page.removeAllListeners("request");
+  await page.unrouteAll();
+
+  // On partitelle.com: the one request to the bot, and nothing else.
+  const production: string[] = [];
+  page.on("request", external(production));
+  await serveAsProduction(page, baseURL as string);
+  await page.clock.install({ time: CLOCK_START });
+  const bot = await mockBot(page, "ok");
+  await page.goto(`${SITE}/privacy/`);
+  await page.clock.fastForward(3_500);
+  await expect.poll(bot.count).toBe(1);
+  await page.waitForLoadState("networkidle");
+  expect(production).toEqual([HEALTH]);
 });
 
 test("declares its own canonical, and the home keeps the site root", async ({
