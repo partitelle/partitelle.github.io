@@ -5,7 +5,7 @@ category: app
 lede: "sotto il riepilogo della partita c'è un nuovo pulsante: apre una pagina dove vedi chi c'è e cambi la lista senza scrivere nel gruppo."
 changes:
   - "tocca «apri la lista» sotto il riepilogo: la mini app si apre nella chat, senza installare niente."
-  - "vedi chi c'è, chi è in forse e chi aspetta un posto."
+  - "vedi chi c'è, chi è in forse e quanti posti sono liberi."
   - "ti aggiungi, ti metti in forse o ti togli con un tocco, e puoi farlo anche per un amico."
   - "da lì sorteggi le squadre e scambi i giocatori."
   - "se cambi il posto di qualcun altro, il bot lo scrive nel gruppo, così tutti sanno chi l'ha fatto."
