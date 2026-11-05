@@ -19,8 +19,8 @@ const segs = (list: readonly Segment[]) =>
   <main>
     <section aria-labelledby="privacy-title" class="bg-yellow text-black">
       <div class="mx-auto w-full max-w-7xl px-6 pb-12 pt-6 lg:px-12 lg:pb-16">
-        <h1 id="privacy-title" class="text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-[4rem]">{p.title}</h1>
-        <p class="mt-6 max-w-[34rem] text-xl leading-relaxed text-muted">{p.lead}</p>
+        <h1 id="privacy-title" class="text-4xl leading-display text-balance sm:text-5xl lg:text-display">{p.title}</h1>
+        <p class="mt-6 max-w-lead text-xl leading-relaxed text-muted">{p.lead}</p>
         <p class="mt-6 text-sm text-muted">{p.updatedLabel} <time datetime={p.updated.iso}>{p.updated.text}</time></p>
       </div>
     </section>
@@ -41,8 +41,8 @@ const segs = (list: readonly Segment[]) =>
         <article class="mt-12 max-w-prose break-words lg:col-span-9 lg:mt-0">
           {
             p.sections.map((section, i) => (
-              <section aria-labelledby={section.id} class="mt-12 border-t border-black/12 pt-12 first:mt-0 first:border-t-0 first:pt-0">
-                <h2 id={section.id} class="scroll-mt-8 text-2xl leading-[1.1] text-balance lg:text-4xl">{heading(i, section.title)}</h2>
+              <section aria-labelledby={section.id} class="mt-12 border-t border-line pt-12 first:mt-0 first:border-t-0 first:pt-0">
+                <h2 id={section.id} class="scroll-mt-8 text-2xl leading-heading text-balance lg:text-4xl">{heading(i, section.title)}</h2>
                 {section.blocks.map((block, b) => {
                   const cls = b === 0 ? first : next;
                   if (block.type === "p") {

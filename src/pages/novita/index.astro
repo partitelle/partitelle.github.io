@@ -20,8 +20,8 @@ const hasBackfill = years.some((g) => g.posts.some((p) => p.data.backfill));
   <main>
     <section aria-labelledby="news-title" class="bg-yellow text-black">
       <div class="mx-auto w-full max-w-7xl px-6 pb-12 pt-6 lg:px-12 lg:pb-16">
-        <h1 id="news-title" class="text-4xl leading-[1.05] text-balance sm:text-5xl lg:text-[4rem]">{n.title}</h1>
-        <p class="mt-6 max-w-[34rem] text-xl leading-relaxed text-muted">{n.lead}</p>
+        <h1 id="news-title" class="text-4xl leading-display text-balance sm:text-5xl lg:text-display">{n.title}</h1>
+        <p class="mt-6 max-w-lead text-xl leading-relaxed text-muted">{n.lead}</p>
       </div>
     </section>
     <div class="bg-white text-black">
@@ -29,14 +29,14 @@ const hasBackfill = years.some((g) => g.posts.some((p) => p.data.backfill));
         {
           years.map((group) => (
             <section aria-labelledby={`anno-${group.year}`} class="mt-16 first:mt-0 lg:mt-24 lg:grid lg:grid-cols-12 lg:gap-12">
-              <h2 id={`anno-${group.year}`} class="text-2xl leading-[1.1] lg:sticky lg:top-8 lg:col-span-3 lg:self-start lg:text-4xl">{group.year}</h2>
-              <div class="mt-4 max-w-[48rem] lg:col-span-9 lg:mt-0">
+              <h2 id={`anno-${group.year}`} class="text-2xl leading-heading lg:sticky lg:top-8 lg:col-span-3 lg:self-start lg:text-4xl">{group.year}</h2>
+              <div class="mt-4 max-w-list lg:col-span-9 lg:mt-0">
                 {group.posts.map((post) => <NewsItem post={post} headingLevel="h3" />)}
               </div>
             </section>
           ))
         }
-        {hasBackfill && <p class="mt-16 max-w-prose border-t border-black/12 pt-8 text-sm text-muted">{n.backfillNote}</p>}
+        {hasBackfill && <p class="mt-16 max-w-prose border-t border-line pt-8 text-sm text-muted">{n.backfillNote}</p>}
       </div>
     </div>
   </main>
