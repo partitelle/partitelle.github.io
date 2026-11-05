@@ -14,7 +14,7 @@ const players = names.slice(0, 6).map((name, i) => ({
 
 const whiteTile =
   "rounded-panel border border-black/12 bg-white p-6 text-black lg:p-8";
-const smallTitle = "text-xl leading-[1.15] lg:text-2xl";
+const smallTitle = "text-xl leading-[1.15] text-balance lg:text-2xl";
 const chipClass = `${chip} text-black`;
 ---
 <section id="cosa-fa" aria-labelledby="features-title" class="bg-paper text-black">
@@ -24,7 +24,7 @@ const chipClass = `${chip} text-black`;
     <ul role="list" class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-12 lg:gap-6">
       <li class={`${whiteTile} sm:col-span-2 lg:col-span-7 lg:row-span-2 sm:grid sm:grid-cols-2 sm:gap-6 sm:items-start lg:flex lg:flex-col`}>
         <div>
-          <h3 class="text-2xl leading-[1.1] lg:text-4xl">{summary.title}</h3>
+          <h3 class="text-2xl leading-[1.1] text-balance lg:text-4xl">{summary.title}</h3>
           <p class="mt-4 max-w-[34rem] text-xl leading-relaxed text-muted">{summary.body}</p>
         </div>
         <div class="mt-8 sm:mt-0 lg:mt-auto lg:pt-8">

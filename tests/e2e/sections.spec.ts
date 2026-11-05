@@ -140,6 +140,36 @@ test("step 2 summary shows 10 slots, 9 taken, 2 maybe, 1 free", async ({
   await expect(summary.locator("[data-changed]")).toHaveCount(0);
 });
 
+test("the place line reads as one phrase and never splits a place name", async ({
+  page,
+}) => {
+  for (const width of [320, 360, 390, 1024]) {
+    await page.setViewportSize({ width, height: 900 });
+    const figures = page.locator(
+      "#come-funziona figure:has(ol), #cosa-fa figure",
+    );
+    expect(await figures.count()).toBeGreaterThan(0);
+    for (const figure of await figures.all()) {
+      const place = figure.locator("p.text-sm.text-muted");
+      await expect(place).toMatchAriaSnapshot(
+        "- paragraph: campo 2 centro sportivo",
+      );
+      const names = place.locator("span.whitespace-nowrap");
+      await expect(names).toHaveText(["campo 2\u00a0·", "centro sportivo"]);
+      for (const name of await names.all()) {
+        const rects = await name.evaluate((el) => {
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          return new Set(
+            Array.from(range.getClientRects(), (r) => Math.round(r.top)),
+          ).size;
+        });
+        expect(rects).toBe(1);
+      }
+    }
+  }
+});
+
 test("step 3 shows two teams of five", async ({ page }) => {
   const teams = page.locator("#come-funziona figure").nth(2);
   const lists = teams.locator("ul");
