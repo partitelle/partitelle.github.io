@@ -16,4 +16,4 @@ order: 1
 ---
 la lista la vede solo chi è nel gruppo. se nessuno usa il bot da un po', la prima apertura è più lenta: se la lista non si carica, riprova dopo qualche secondo.
 
-l'informativa privacy ora spiega anche la mini app.
+l'[informativa privacy](/privacy#mini-app) ora spiega anche la mini app.

@@ -3,9 +3,9 @@ import Footer from "../components/Footer.astro";
 import SiteHeader from "../components/SiteHeader.astro";
 import { it, type Segment } from "../i18n/it";
 import Base from "../layouts/Base.astro";
+import { inlineLink } from "../lib/classes";
 
 const p = it.privacy;
-const link = "underline underline-offset-4 hover:decoration-2";
 const first = "mt-4 text-base leading-relaxed lg:mt-6 lg:text-xl";
 const next = "mt-4 text-base leading-relaxed lg:text-xl";
 const heading = (i: number, title: string) => `${i + 1}. ${title}`;
@@ -48,7 +48,7 @@ const segs = (list: readonly Segment[]) =>
                   if (block.type === "p") {
                     return (
                       <p class={cls}>
-                        {segs(block.segments).map((s) => (s.href ? <a href={s.href} class={link}>{s.text}</a> : s.text))}
+                        {segs(block.segments).map((s) => (s.href ? <a href={s.href} class={inlineLink}>{s.text}</a> : s.text))}
                       </p>
                     );
                   }
@@ -56,7 +56,7 @@ const segs = (list: readonly Segment[]) =>
                     return (
                       <ul class="mt-4 list-disc space-y-2 pl-6 text-base leading-relaxed marker:text-black lg:text-xl">
                         {block.items.map((item) => (
-                          <li>{segs(item).map((s) => (s.href ? <a href={s.href} class={link}>{s.text}</a> : s.text))}</li>
+                          <li>{segs(item).map((s) => (s.href ? <a href={s.href} class={inlineLink}>{s.text}</a> : s.text))}</li>
                         ))}
                       </ul>
                     );
@@ -66,7 +66,7 @@ const segs = (list: readonly Segment[]) =>
                       {block.items.map((item) => (
                         <li>
                           <strong class="font-bold">{item.lead}</strong>
-                          {segs(item.segments).map((s) => (s.href ? <a href={s.href} class={link}>{s.text}</a> : s.text))}
+                          {segs(item.segments).map((s) => (s.href ? <a href={s.href} class={inlineLink}>{s.text}</a> : s.text))}
                         </li>
                       ))}
                     </ol>

@@ -131,6 +131,39 @@ test.describe("post", () => {
     await expect(page.locator("#gioca")).toBeVisible();
   });
 
+  test("the mini app post links the privacy notice, underlined", async ({
+    page,
+  }) => {
+    await page.goto(`/novita/${MINI_APP}/`);
+    const link = page.locator("main a[href^='/privacy']");
+    await expect(link).toHaveCount(1);
+    await expect(link).toHaveAttribute("href", "/privacy#mini-app");
+    await expect(link).toHaveCSS("text-decoration-line", "underline");
+    await expect(link.locator("xpath=..")).toHaveText(
+      "l’informativa privacy ora spiega anche la mini app.",
+    );
+  });
+
+  test("the closing divider and the other posts share one width", async ({
+    page,
+  }) => {
+    for (const slug of [MINI_APP, REMINDER, OLDEST]) {
+      await page.goto(`/novita/${slug}/`);
+      const closing = page.locator("[aria-labelledby=post-title] .border-t");
+      const rows = page
+        .getByRole("navigation", { name: "altre novità" })
+        .locator("article");
+      const ref = await closing.boundingBox();
+      expect(ref).not.toBeNull();
+      expect(await rows.count()).toBeGreaterThan(0);
+      for (const row of await rows.all()) {
+        const box = await row.boundingBox();
+        expect(box?.x).toBeCloseTo(ref?.x ?? -1, 1);
+        expect(box?.width).toBeCloseTo(ref?.width ?? -1, 1);
+      }
+    }
+  });
+
   test("a middle post links to the newer and the older one", async ({
     page,
   }) => {

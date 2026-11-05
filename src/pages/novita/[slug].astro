@@ -57,7 +57,7 @@ const text = "text-base leading-relaxed lg:text-xl";
             <ul class={`mt-6 list-disc space-y-2 pl-6 marker:text-black ${text}`}>
               {changes.map((change) => <li>{change}</li>)}
             </ul>
-            {hasBody && <div class={`mt-8 space-y-4 ${text}`}><Content /></div>}
+            {hasBody && <div class={`mt-8 space-y-4 [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:decoration-2 ${text}`}><Content /></div>}
             {
               (version || backfill) && (
                 <div class="mt-12 space-y-2 border-t border-black/12 pt-6 text-sm text-muted">
@@ -72,7 +72,7 @@ const text = "text-base leading-relaxed lg:text-xl";
     </article>
     <nav aria-label={n.otherNews} class="bg-white text-black">
       <div class="mx-auto w-full max-w-7xl px-6 pb-16 lg:px-12 lg:pb-24">
-        <div class="max-w-[48rem]">
+        <div class="max-w-prose">
           <p class="text-sm text-muted">{n.otherNews}</p>
           <div class="mt-4">
             {others.map((other) => <NewsItem post={other} headingLevel="h2" />)}
