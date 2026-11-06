@@ -258,6 +258,17 @@ test.describe("with JavaScript", () => {
     await expect(start(page)).toBeHidden();
   });
 
+  test("a play event from another route also turns the controls on", async ({
+    page,
+  }) => {
+    await expect(start(page)).toBeVisible();
+    await video(page).evaluate((v) => v.dispatchEvent(new Event("play")));
+    await expect(start(page)).toBeHidden();
+    expect(
+      await video(page).evaluate((v: HTMLVideoElement) => v.controls),
+    ).toBe(true);
+  });
+
   test("credits: three lines, two links, same tab", async ({ page }) => {
     const lines = page.locator("#video figcaption p");
     await expect(lines).toHaveText([

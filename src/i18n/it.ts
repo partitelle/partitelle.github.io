@@ -760,7 +760,7 @@ export const it = {
     title: "te lo raccontiamo in un minuto.",
     playLabel: "guarda il video",
     durationLabel: "0:56",
-    playAria: "guarda il video, 56 secondi",
+    durationA11y: "56 secondi",
     captionsLabel: "italiano",
     transcriptSummary: "leggi il testo del video",
     transcript: ["segnaposto: il testo arriva con il video."],

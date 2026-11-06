@@ -95,6 +95,7 @@ const fill = "absolute inset-0 size-full rounded-panel";
     video.controls = false;
     start.hidden = false;
     video.addEventListener("play", () => {
+      video.controls = true;
       start.hidden = true;
     });
     start.addEventListener("click", () => {
