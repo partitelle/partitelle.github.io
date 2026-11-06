@@ -1,5 +1,6 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
+import { expectNoShift, rectsOf, tabTo } from "./keyboard";
 
 const SITE_URL = "https://partitelle.com/";
 const PRIVACY_URL = "https://partitelle.com/privacy/";
@@ -346,4 +347,19 @@ test("does not scroll sideways", async ({ page }) => {
     );
     expect(overflow, `width ${width}`).toBeLessThanOrEqual(0);
   }
+});
+
+test("an inline link shows the yellow fill when focused by keyboard", async ({
+  page,
+}) => {
+  await page.goto("/privacy/");
+  const link = page.locator("main a.link-inline").first();
+  const before = await rectsOf(link);
+  await tabTo(page, link);
+  await expect(link).toBeFocused();
+  await expect(link).toHaveCSS("background-color", "rgb(255, 210, 31)");
+  await expect(link).toHaveCSS("text-decoration-thickness", "3px");
+  await expect(link).toHaveCSS("outline-color", "rgba(0, 0, 0, 0)");
+  await expect(link).toHaveCSS("outline-offset", "0px");
+  expectNoShift(await rectsOf(link), before);
 });

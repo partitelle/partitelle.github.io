@@ -1,6 +1,7 @@
 import { readdirSync } from "node:fs";
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
+import { expectNoShift, rectsOf, tabTo } from "./keyboard";
 
 const SITE_URL = "https://partitelle.com";
 const BOT_HOST = /partitelle-bot\.onrender\.com/;
@@ -142,6 +143,38 @@ test.describe("post", () => {
     await expect(link.locator("xpath=..")).toHaveText(
       "l’informativa privacy ora spiega anche la mini app.",
     );
+  });
+
+  test("a post body link shows the yellow fill when focused by keyboard", async ({
+    page,
+  }) => {
+    await page.goto(`/novita/${MINI_APP}/`);
+    const link = page.locator("main a[href^='/privacy']");
+    const before = await rectsOf(link);
+    await expect(link).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+    await tabTo(page, link);
+    await expect(link).toBeFocused();
+    await expect(link).toHaveCSS("background-color", "rgb(255, 210, 31)");
+    await expect(link).toHaveCSS("text-decoration-thickness", "3px");
+    await expect(link).toHaveCSS("outline-color", "rgba(0, 0, 0, 0)");
+    await expect(link).toHaveCSS("outline-offset", "0px");
+    await expect(link).toHaveCSS("outline-style", "solid");
+    await expect(link).toHaveCSS("outline-width", "3px");
+    // No layout shift: only the 4px bottom padding is added to the link box.
+    expectNoShift(await rectsOf(link), before);
+  });
+
+  test("the back link on the yellow band keeps the ring, with no fill", async ({
+    page,
+  }) => {
+    await page.goto(`/novita/${MINI_APP}/`);
+    const back = page.getByRole("link", { name: "← tutte le novità" });
+    await tabTo(page, back);
+    await expect(back).toBeFocused();
+    await expect(back).toHaveCSS("outline-style", "solid");
+    await expect(back).toHaveCSS("outline-width", "3px");
+    await expect(back).toHaveCSS("outline-color", "rgb(17, 17, 17)");
+    await expect(back).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
   });
 
   test("the closing divider and the other posts share one width", async ({
