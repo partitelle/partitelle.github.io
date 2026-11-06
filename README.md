@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="brand/app-icon.svg" alt="partitelle logo" width="160">
+  <img src="brand/readme-icon.svg" alt="partitelle logo" width="160">
 </p>
 <h1 align="center">partitelle.github.io</h1>
 <p align="center">the source of <a href="https://partitelle.com">partitelle.com</a>, the website of partitelle.</p>
