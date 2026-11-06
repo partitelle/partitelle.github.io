@@ -57,7 +57,7 @@ const text = "text-base leading-relaxed lg:text-xl";
             <ul class={`mt-6 list-disc space-y-2 pl-6 marker:text-black ${text}`}>
               {changes.map((change) => <li>{change}</li>)}
             </ul>
-            {hasBody && <div class={`mt-8 space-y-4 [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:decoration-2 ${text}`}><Content /></div>}
+            {hasBody && <div class={`mt-8 space-y-4 post-body ${text}`}><Content /></div>}
             {
               (version || backfill) && (
                 <div class="mt-12 space-y-2 border-t border-line pt-6 text-sm text-muted">

@@ -7,7 +7,7 @@ export const chip =
 export const navLink =
   "inline-flex min-h-12 items-center text-base font-medium text-black no-underline underline-offset-4 decoration-2 hover:underline aria-[current]:underline";
 
-export const inlineLink = "underline underline-offset-4 hover:decoration-2";
+export const inlineLink = "link-inline";
 
 const keywordBase =
   "inline-flex min-h-12 cursor-pointer items-center rounded-pill border border-black bg-black px-5 text-base font-bold text-white";
