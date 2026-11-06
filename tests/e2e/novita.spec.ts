@@ -141,7 +141,7 @@ test.describe("post", () => {
     await expect(link).toHaveAttribute("href", "/privacy#mini-app");
     await expect(link).toHaveCSS("text-decoration-line", "underline");
     await expect(link.locator("xpath=..")).toHaveText(
-      "l’informativa privacy ora spiega anche la mini app.",
+      "l'informativa privacy ora spiega anche la mini app.",
     );
   });
 
@@ -175,6 +175,17 @@ test.describe("post", () => {
     await expect(back).toHaveCSS("outline-width", "3px");
     await expect(back).toHaveCSS("outline-color", "rgb(17, 17, 17)");
     await expect(back).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  });
+
+  test("post bodies show straight apostrophes, as typed", async ({ page }) => {
+    await page.goto(`/novita/${MINI_APP}/`);
+    const body = page.locator("main .post-body");
+    await expect(body).toContainText("da un po',");
+    await expect(body).toContainText("l'informativa privacy");
+    await page.goto("/novita/il-bot-capisce-meglio/");
+    const typed = page.locator("main .post-body");
+    await expect(typed).toContainText("capisce l'ora scritta");
+    await expect(typed).toContainText("«scambia»");
   });
 
   test("the closing divider and the other posts share one width", async ({
@@ -388,6 +399,20 @@ test.describe("quality", () => {
       expect(text ?? "", slug).not.toMatch(
         /calcio|calcetto|calciatori|pallone|football|soccer|basket|tennis|padel|equilibrat|a sorte/i,
       );
+    }
+  });
+
+  test("no page has curly quotes, dashes or ellipses", async ({ request }) => {
+    const paths = [
+      "/",
+      "/novita/",
+      "/privacy/",
+      "/status/",
+      ...SLUGS.map((slug) => `/novita/${slug}/`),
+    ];
+    for (const path of paths) {
+      const html = await (await request.get(path)).text();
+      expect(html, path).not.toMatch(/[’‘“”–—…]/);
     }
   });
 
