@@ -6,6 +6,7 @@ type Credit = string | { text: string; href: string };
 
 interface Props {
   id: string;
+  class?: string;
   title: string;
   sources: { src: string; media?: string }[];
   captions: string;
@@ -24,6 +25,7 @@ interface Props {
 
 const {
   id,
+  class: className,
   title,
   sources,
   captions,
@@ -37,11 +39,11 @@ const { video } = it;
 const titleId = `${id}-title`;
 const fill = "absolute inset-0 size-full rounded-panel";
 ---
-<div id={id} role="group" aria-labelledby={titleId} data-video class="mt-16 lg:mt-24">
+<div id={id} role="group" aria-labelledby={titleId} data-video class:list={["mt-16 lg:mt-24", className]}>
   <h3 id={titleId} class="text-2xl leading-title">{title}</h3>
   <figure class="mt-6">
-    <div class="relative aspect-video w-full max-w-video rounded-panel border border-line bg-black">
-      <video controls preload="none" playsinline class:list={[fill, "object-cover"]}>
+    <div class="relative aspect-video w-full max-w-video rounded-panel border border-line">
+      <video controls preload="none" playsinline class:list={[fill, "bg-black object-cover"]}>
         {sources.map((source) => <source src={source.src} type="video/mp4" media={source.media} />)}
         <track kind="captions" srclang="it" label={video.captionsLabel} src={captions} default />
       </video>
