@@ -11,7 +11,7 @@ import type { Category } from "../lib/news";
 interface Props {
   category: Category;
   size?: "md" | "lg";
-  surface?: "light" | "yellow";
+  background?: "light" | "yellow";
 }
 
 const icons: Record<Category, string> = {
@@ -24,18 +24,18 @@ const icons: Record<Category, string> = {
   sito,
 };
 
-const { category, size = "md", surface = "light" } = Astro.props;
+const { category, size = "md", background = "light" } = Astro.props;
 const sizes = {
   md: "size-12 [&>svg]:size-7",
   lg: "size-16 [&>svg]:size-9",
 };
-const surfaces = {
+const backgrounds = {
   light: "bg-yellow text-black",
   yellow: "bg-black text-yellow",
 };
 ---
 <span
   aria-hidden="true"
-  class:list={["inline-flex shrink-0 items-center justify-center rounded-pill", sizes[size], surfaces[surface]]}
+  class:list={["inline-flex shrink-0 items-center justify-center rounded-pill", sizes[size], backgrounds[background]]}
   set:html={icons[category]}
 />

@@ -56,7 +56,7 @@ if (hidden > 0) rows.push({ state: "more", count: hidden });
 ---
 <figure
   class:list={[
-    "w-full max-w-md rounded-panel border border-black/12 bg-white text-black",
+    "w-full max-w-md rounded-panel border border-line bg-white text-black",
     compact ? "p-4" : "p-4 sm:p-6",
   ]}
 >
@@ -70,8 +70,11 @@ if (hidden > 0) rows.push({ state: "more", count: hidden });
           <p class="text-sm text-muted">
             {placeParts.map((part, i) => (
               <>
-                {i > 0 && <span aria-hidden="true"> · </span>}
-                {part}
+                {i > 0 && " "}
+                <span class="whitespace-nowrap">
+                  {part}
+                  {i < placeParts.length - 1 && <span aria-hidden="true">&nbsp;·</span>}
+                </span>
               </>
             ))}
           </p>
@@ -83,14 +86,14 @@ if (hidden > 0) rows.push({ state: "more", count: hidden });
       <span class="sr-only">{(taken === 1 ? it.panels.counterSrOne : it.panels.counterSr).replace("{n}", String(taken)).replace("{target}", String(target))}</span>
     </p>
   </div>
-  <ol role="list" aria-label={it.panels.listLabel} class="mt-4 divide-y divide-black/12 border-t border-black/12">
+  <ol role="list" aria-label={it.panels.listLabel} class="mt-4 divide-y divide-line border-t border-line">
     {
       rows.map((row) => {
         const rowClass = [
-          "flex items-center gap-3",
+          "relative flex items-center gap-3",
           compact ? "min-h-8 py-1 text-sm" : "min-h-10 py-2",
           row.state !== "empty" && row.state !== "more" && row.changed
-            ? "-mx-3 rounded-pill bg-yellow px-3"
+            ? `isolate before:absolute before:-inset-x-2 before:-z-10 before:rounded-pill before:bg-yellow ${compact ? "before:inset-y-0.5" : "before:inset-y-1"}`
             : "",
         ];
         if (row.state === "more") {
@@ -113,7 +116,7 @@ if (hidden > 0) rows.push({ state: "more", count: hidden });
             <span aria-hidden="true" class="w-6 text-sm text-muted tabular-nums">{row.slot}</span>
             <span class={compact ? "text-sm" : "text-base"}>{row.name}</span>
             {row.state === "maybe" && (
-              <span class="ml-auto rounded-pill border border-black/12 px-3 text-sm text-muted">{it.panels.maybe}</span>
+              <span class="ml-auto rounded-pill border border-line px-3 text-sm text-muted">{it.panels.maybe}</span>
             )}
           </li>
         );

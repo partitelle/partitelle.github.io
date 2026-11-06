@@ -12,11 +12,11 @@ interface Props {
 const { post, headingLevel: Heading = "h3" } = Astro.props;
 const { title, lede, category, date } = post.data;
 ---
-<article class="relative grid grid-cols-[auto_1fr] gap-4 border-t border-black/12 py-8 first:border-t-0 sm:gap-6">
+<article class="relative grid grid-cols-[auto_1fr] gap-4 border-t border-line py-8 first:border-t-0 sm:gap-6">
   <CategoryBadge category={category} size="md" />
   <div class="min-w-0">
     <p class="text-sm text-muted"><span>{it.news.categories[category]}</span> · <time datetime={isoDate(date)}>{formatDate(date)}</time></p>
-    <Heading class="mt-2 text-xl leading-[1.15] text-balance lg:text-2xl">
+    <Heading class="mt-2 text-xl leading-title text-balance lg:text-2xl">
       <a href={`/novita/${post.id}/`} class="no-underline underline-offset-4 decoration-2 hover:underline after:absolute after:inset-0">{title}</a>
     </Heading>
     <p class="mt-2 max-w-prose text-base leading-relaxed text-muted">{lede}</p>

@@ -11,11 +11,22 @@
   --color-white: #ffffff;
   --color-paper: #f4f2ec;
   --color-muted: #4a4d55;
+  /* Borders and dividers on light surfaces: black at 12%. An alias, not a new color. */
+  --color-line: color-mix(in oklab, var(--color-black) 12%, transparent);
 
   --font-*: initial;
   --font-brand:
     "Outfit Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-sans: var(--font-brand);
+
+  --container-lead: 34rem;
+  --container-list: 48rem;
+
+  --text-display: 4rem;
+  --text-display--line-height: 1.05;
+  --leading-display: 1.05;
+  --leading-heading: 1.1;
+  --leading-title: 1.15;
 
   --radius-*: initial;
   --radius-pill: 999px;
