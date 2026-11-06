@@ -1,9 +1,11 @@
 ---
 import { it } from "../i18n/it";
 import SectionLabel from "./SectionLabel.astro";
+import VideoFigure from "./VideoFigure.astro";
 ---
 <section id="problema" aria-labelledby="problem-title" class="bg-white text-black">
-  <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:grid lg:grid-cols-12 lg:gap-12 lg:px-12 lg:py-24">
+  <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:px-12 lg:py-24">
+    <div class="lg:grid lg:grid-cols-12 lg:gap-12">
     <SectionLabel id="problem-title" class="lg:col-span-3 lg:self-start">{it.problem.title}</SectionLabel>
     <ul role="list" class="mt-8 max-w-4xl divide-y divide-line lg:col-span-9 lg:mt-0">
       {
@@ -15,5 +17,27 @@ import SectionLabel from "./SectionLabel.astro";
         ))
       }
     </ul>
+    </div>
+    <VideoFigure
+      id="video"
+      title={it.video.title}
+      sources={[
+        { src: "/video/presentazione-placeholder.mp4", media: "(min-width: 1024px)" },
+        { src: "/video/presentazione-placeholder.mp4" },
+      ]}
+      captions="/video/presentazione-placeholder.it.vtt"
+      poster={{
+        src: "/video/presentazione-placeholder-poster-960.webp",
+        srcset:
+          "/video/presentazione-placeholder-poster-960.webp 960w, /video/presentazione-placeholder-poster-1920.webp 1920w",
+        sizes: "(min-width: 1024px) 60rem, calc(100vw - 3rem)",
+        width: 1920,
+        height: 1080,
+      }}
+      durationLabel={it.video.durationLabel}
+      durationA11y="56 secondi"
+      credits={it.video.credits}
+      transcript={it.video.transcript}
+    />
   </div>
 </section>

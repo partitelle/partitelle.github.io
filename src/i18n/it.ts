@@ -756,6 +756,32 @@ export const it = {
       },
     ],
   },
+  video: {
+    title: "te lo raccontiamo in un minuto.",
+    playLabel: "guarda il video",
+    durationLabel: "0:56",
+    playAria: "guarda il video, 56 secondi",
+    captionsLabel: "italiano",
+    transcriptSummary: "leggi il testo del video",
+    transcript: ["segnaposto: il testo arriva con il video."],
+    credits: [
+      [
+        "musica: ",
+        {
+          text: "Pure House Beats 01",
+          href: "https://ende.app/en/song/499-pure-house-beats-01",
+        },
+        " di Sascha Ende, licenza ",
+        {
+          text: "CC BY 4.0",
+          href: "https://creativecommons.org/licenses/by/4.0/deed.it",
+        },
+        ", accorciata per il video.",
+      ],
+      ["voce generata con IA."],
+      ["partitelle è un progetto indipendente, non affiliato a Telegram."],
+    ],
+  },
   how: {
     title: "come funziona",
     steps: [
