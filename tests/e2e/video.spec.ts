@@ -91,7 +91,7 @@ test.describe("with JavaScript", () => {
     await expect(img).toHaveAttribute("height", "1080");
     await expect(img).toHaveAttribute(
       "sizes",
-      "(min-width: 1024px) 60rem, calc(100vw - 3rem)",
+      "(min-width: 1024px) 55rem, calc(100vw - 3rem)",
     );
     expect(await img.getAttribute("srcset")).toMatch(/ 960w, .* 1920w$/);
     await expect(img).toHaveClass(/object-cover/);
@@ -119,21 +119,36 @@ test.describe("with JavaScript", () => {
     [390, 342, 192.375],
     [640, 592, 333],
     [768, 720, 405],
-    [1024, 928, 522],
-    [1280, 960, 540],
-    [1440, 960, 540],
+    [1024, 684, 384.75],
+    [1280, 876, 492.75],
+    [1440, 876, 492.75],
   ] as const) {
-    test(`frame is ${w} x ${h} at ${width} px, aligned with the section label`, async ({
+    test(`frame is ${w} x ${h} at ${width} px, aligned with the text column`, async ({
       page,
     }) => {
       await page.setViewportSize({ width, height: 900 });
       const box = await frame(page).boundingBox();
       const label = await page.locator("#problem-title").boundingBox();
+      const list = await page.locator("#problema ul").boundingBox();
       expect(box?.width).toBeCloseTo(w, 0);
       expect(box?.height).toBeCloseTo(h, 0);
-      expect(Math.abs((box?.x ?? 0) - (label?.x ?? 99))).toBeLessThanOrEqual(
-        0.5,
-      );
+      if (width >= 1024) {
+        // from 1024 px the frame shares the pain lines' left and right edges
+        expect(Math.abs((box?.x ?? 0) - (list?.x ?? 99))).toBeLessThanOrEqual(
+          0.5,
+        );
+        expect(
+          Math.abs(
+            (box?.x ?? 0) +
+              (box?.width ?? 0) -
+              ((list?.x ?? 0) + (list?.width ?? 0)),
+          ),
+        ).toBeLessThanOrEqual(0.5);
+      } else {
+        expect(Math.abs((box?.x ?? 0) - (label?.x ?? 99))).toBeLessThanOrEqual(
+          0.5,
+        );
+      }
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth - innerWidth,
@@ -141,6 +156,35 @@ test.describe("with JavaScript", () => {
       ).toBeLessThanOrEqual(0);
     });
   }
+
+  test("the frame is transparent, the video paints the dark fill", async ({
+    page,
+  }) => {
+    const bg = (l: ReturnType<typeof frame>) =>
+      l.evaluate((el) => getComputedStyle(el).backgroundColor);
+    expect(await bg(frame(page))).toBe("rgba(0, 0, 0, 0)");
+    expect(await bg(video(page))).toBe("rgb(17, 17, 17)");
+  });
+
+  test("the platform name appears only in credit line 3", async ({ page }) => {
+    const count = (t: string) => (t.match(/telegram/gi) ?? []).length;
+    const all = count((await page.locator("#video").textContent()) ?? "");
+    const lines = page.locator("#video figcaption p");
+    await expect(lines).toHaveCount(3);
+    const third = count((await lines.nth(2).textContent()) ?? "");
+    expect(third).toBeGreaterThanOrEqual(1);
+    expect(all).toBe(third);
+    for (const i of [0, 1]) {
+      expect(count((await lines.nth(i).textContent()) ?? "")).toBe(0);
+    }
+    for (const sel of ["h3", "button", "details"]) {
+      expect(
+        count(
+          (await page.locator(`#video ${sel}`).first().textContent()) ?? "",
+        ),
+      ).toBe(0);
+    }
+  });
 
   test("the frame uses the video container token, not a literal", async ({
     page,
