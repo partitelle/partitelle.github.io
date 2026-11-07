@@ -264,6 +264,33 @@ test.describe("with JavaScript", () => {
     ]);
   });
 
+  test("captions keep the solid plate and have a 12 px floor on small screens", async ({
+    page,
+  }) => {
+    // getComputedStyle(video, "::cue") does not reflect ::cue rules reliably
+    // (Chromium reports 16px at every width, WebKit returns nothing), so the
+    // built stylesheet is the stable thing to assert. The rendered size was
+    // checked by hand in Chromium and WebKit at 320, 360 and 1280 px.
+    const hrefs = await page
+      .locator('link[rel="stylesheet"]')
+      .evaluateAll((links) => links.map((l) => (l as HTMLLinkElement).href));
+    expect(hrefs.length).toBeGreaterThan(0);
+    let css = "";
+    for (const href of hrefs)
+      css += await (await page.request.get(href)).text();
+    css = css.replace(/\s+/g, "");
+    expect(css).toMatch(
+      /video::cue\{[^}]*background-color:var\(--color-black\)/,
+    );
+    expect(css).toMatch(
+      /@media\((max-width:30rem|width<=30rem)\)\{video::cue\{font-size:12px;?\}\}/,
+    );
+    // no size on the base rule: desktop keeps the browser default
+    const base = css.match(/(?:^|\})video::cue\{[^}]*\}/)?.[0] ?? "";
+    expect(base).toContain("background-color");
+    expect(base).not.toContain("font-size");
+  });
+
   test("the frame uses the video container token, not a literal", async ({
     page,
   }) => {
