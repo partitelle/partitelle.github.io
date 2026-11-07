@@ -42,7 +42,7 @@ test("both sections are named regions with the right heading outline", async ({
     "in forse? il posto resta tuo",
     "squadre sorteggiate, ritocchi con una riga",
   ]);
-  await expect(page.getByRole("heading", { level: 3 })).toHaveCount(9);
+  await expect(page.getByRole("heading", { level: 3 })).toHaveCount(10);
 });
 
 test("features section has three tiles and the compact summary", async ({
@@ -197,7 +197,12 @@ test("keyword list names the four words", async ({ page }) => {
 
 test("new sections never name a platform", async ({ page }) => {
   for (const id of SECTIONS) {
-    const text = await page.locator(id).evaluate((el) => el.outerHTML);
+    // The video block names Telegram in its credit line (see video.spec.ts).
+    const text = await page.locator(id).evaluate((el) => {
+      const copy = el.cloneNode(true) as Element;
+      copy.querySelector("#video")?.remove();
+      return copy.outerHTML;
+    });
     expect(text).not.toMatch(/telegram|whatsapp/i);
   }
 });
@@ -209,15 +214,20 @@ test("the page keeps a single whistle mark", async ({ page }) => {
 test("new sections are not focusable and do not move", async ({ page }) => {
   for (const id of SECTIONS) {
     const section = page.locator(id);
+    // The video block is interactive on purpose (see video.spec.ts).
     const focusable = await section.evaluate(
       (el) =>
-        el.querySelectorAll(
-          "a[href], button, input, select, textarea, [tabindex], [contenteditable]",
-        ).length,
+        Array.from(
+          el.querySelectorAll(
+            "a[href], button, input, select, textarea, [tabindex], [contenteditable]",
+          ),
+        ).filter((n) => !n.closest("#video")).length,
     );
     expect(focusable).toBe(0);
     const motion = await section.evaluate((el) => {
-      const nodes = [el, ...el.querySelectorAll("*")];
+      const nodes = [el, ...el.querySelectorAll("*")].filter(
+        (n) => !n.closest("#video"),
+      );
       const animated = nodes.filter((n) => {
         const cs = getComputedStyle(n);
         return (
@@ -225,7 +235,17 @@ test("new sections are not focusable and do not move", async ({ page }) => {
           cs.transitionDuration.split(", ").some((d) => d !== "0s")
         );
       }).length;
-      return { animated, running: el.getAnimations({ subtree: true }).length };
+      return {
+        animated,
+        running: el
+          .getAnimations({ subtree: true })
+          .filter(
+            (a) =>
+              !(
+                (a.effect as KeyframeEffect | null)?.target as Element | null
+              )?.closest("#video"),
+          ).length,
+      };
     });
     expect(motion).toEqual({ animated: 0, running: 0 });
   }

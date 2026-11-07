@@ -21,6 +21,7 @@
 
   --container-lead: 34rem;
   --container-list: 48rem;
+  --container-video: 60rem;
 
   --text-display: 4rem;
   --text-display--line-height: 1.05;
@@ -38,6 +39,13 @@
 }
 
 @layer base {
+  video::cue {
+    font-family: var(--font-brand);
+    font-weight: 500;
+    color: var(--color-white);
+    background-color: var(--color-black);
+  }
+
   html {
     font-family: var(--font-brand);
     font-weight: 500;
@@ -215,6 +223,28 @@
   transition-duration: var(--cta-press-duration);
 }
 
+/* The video start button is the focusable element, so its pill (same lift
+   and press tokens as .cta, kept separate so .cta stays the CTA pills) moves
+   with it. */
+.video-play {
+  transition: transform var(--cta-duration) var(--cta-ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .video-start:hover .video-play {
+    transform: translateY(-2px);
+  }
+}
+
+.video-start:focus-visible .video-play {
+  transform: translateY(-2px);
+}
+
+.video-start:active .video-play {
+  transform: translateY(0) scale(0.97);
+  transition-duration: var(--cta-press-duration);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .whistle-ray {
     animation: none;
@@ -223,7 +253,11 @@
   .cta,
   .cta:hover,
   .cta:focus-visible,
-  .cta:active {
+  .cta:active,
+  .video-play,
+  .video-start:hover .video-play,
+  .video-start:focus-visible .video-play,
+  .video-start:active .video-play {
     transition: none;
     transform: none;
   }

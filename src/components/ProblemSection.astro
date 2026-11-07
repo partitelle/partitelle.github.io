@@ -1,6 +1,7 @@
 ---
 import { it } from "../i18n/it";
 import SectionLabel from "./SectionLabel.astro";
+import VideoFigure from "./VideoFigure.astro";
 ---
 <section id="problema" aria-labelledby="problem-title" class="bg-white text-black">
   <div class="mx-auto w-full max-w-7xl px-6 py-16 lg:grid lg:grid-cols-12 lg:gap-12 lg:px-12 lg:py-24">
@@ -15,5 +16,27 @@ import SectionLabel from "./SectionLabel.astro";
         ))
       }
     </ul>
+    <VideoFigure
+      id="video"
+      class="lg:col-span-9 lg:col-start-4"
+      title={it.video.title}
+      sources={[
+        { src: "/video/presentazione-1080.mp4", media: "(min-width: 1024px)" },
+        { src: "/video/presentazione-720.mp4" },
+      ]}
+      captions="/video/presentazione.it.vtt"
+      poster={{
+        src: "/video/presentazione-poster-960.webp",
+        srcset:
+          "/video/presentazione-poster-960.webp 960w, /video/presentazione-poster-1920.webp 1920w",
+        sizes: "(min-width: 1024px) 55rem, calc(100vw - 3rem)",
+        width: 1920,
+        height: 1080,
+      }}
+      durationLabel={it.video.durationLabel}
+      durationA11y={it.video.durationA11y}
+      credits={it.video.credits}
+      transcript={it.video.transcript}
+    />
   </div>
 </section>

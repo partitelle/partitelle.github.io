@@ -7,6 +7,6 @@ Content: the text of the site (including the copy in src/i18n/), the images, the
 
 Code: the source code is not licensed for reuse either, unless a file says otherwise.
 
-Third-party packages and fonts keep their own licenses.
+Third-party packages, fonts and the music in the video in public/video/ keep their own licenses. The music is "Pure House Beats 01" by Sascha Ende, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
 
 For the name "partitelle" and the whistle mark, see TRADEMARKS.md.
