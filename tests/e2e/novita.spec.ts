@@ -11,6 +11,8 @@ const SLUGS = readdirSync("src/content/novita")
 const MINI_APP = "arriva-la-mini-app";
 const REMINDER = "il-promemoria-non-si-perde";
 const OLDEST = "nasce-il-bot";
+const NEWEST = "togli-piu-nomi-insieme";
+const NEWEST_TITLE = "togli più nomi con un messaggio solo";
 const SAMPLE = [`/novita/`, `/novita/${MINI_APP}/`, `/novita/${REMINDER}/`];
 
 // Records every request to the bot host (and blocks it, so tests stay offline).
@@ -23,8 +25,8 @@ async function watchBot(page: Page) {
   return hits;
 }
 
-test("the collection holds the 11 posts", () => {
-  expect(SLUGS).toHaveLength(11);
+test("the collection holds the 12 posts", () => {
+  expect(SLUGS).toHaveLength(12);
 });
 
 test.describe("index", () => {
@@ -42,7 +44,7 @@ test.describe("index", () => {
       "2024",
       "2022",
     ]);
-    await expect(page.getByRole("heading", { level: 3 })).toHaveCount(11);
+    await expect(page.getByRole("heading", { level: 3 })).toHaveCount(12);
     await expect(page.locator("main")).toContainText(
       "abbiamo aperto questa pagina a novembre 2026.",
     );
@@ -53,7 +55,8 @@ test.describe("index", () => {
     const hrefs = await page
       .locator("main h3 a")
       .evaluateAll((els) => els.map((el) => el.getAttribute("href")));
-    expect(hrefs.slice(0, 4)).toEqual([
+    expect(hrefs.slice(0, 5)).toEqual([
+      `/novita/${NEWEST}/`,
       `/novita/${MINI_APP}/`,
       "/novita/il-bot-risponde/",
       `/novita/${REMINDER}/`,
@@ -67,8 +70,8 @@ test.describe("index", () => {
   }) => {
     await page.goto("/novita/");
     const first = page.locator("main article time").first();
-    await expect(first).toHaveAttribute("datetime", "2026-11-02");
-    await expect(first).toHaveText("2 novembre 2026");
+    await expect(first).toHaveAttribute("datetime", "2026-11-07");
+    await expect(first).toHaveText("7 novembre 2026");
     const last = page.locator("main article time").last();
     await expect(last).toHaveAttribute("datetime", "2022-04-16");
     await expect(last).toHaveText("16 aprile 2022");
@@ -91,16 +94,19 @@ test.describe("post", () => {
         "article",
       );
       // Posts written after the fact never claim the old date as published time.
+      // The one post written on its release day does claim its date.
       await expect(
         page.locator('meta[property="article:published_time"]'),
-      ).toHaveCount(0);
+      ).toHaveCount(slug === NEWEST ? 1 : 0);
       await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
       await expect(
         page.getByRole("heading", { level: 2, name: "cosa cambia per te" }),
       ).toBeVisible();
-      await expect(page.locator("main")).toContainText(
-        "questa novità l'abbiamo scritta a novembre 2026, ripercorrendo la storia del bot.",
-      );
+      const marker =
+        "questa novità l'abbiamo scritta a novembre 2026, ripercorrendo la storia del bot.";
+      if (slug === NEWEST)
+        await expect(page.locator("main")).not.toContainText(marker);
+      else await expect(page.locator("main")).toContainText(marker);
     }
   });
 
@@ -124,9 +130,9 @@ test.describe("post", () => {
       "versione del bot: 1.10.0",
     );
     const others = page.getByRole("navigation", { name: "altre novità" });
-    // The newest post only has an older neighbour.
-    await expect(others.locator("article")).toHaveCount(1);
+    await expect(others.locator("article")).toHaveCount(2);
     await expect(others.getByRole("heading", { level: 2 })).toHaveText([
+      NEWEST_TITLE,
       "il bot risponde? ora puoi controllarlo",
     ]);
     await expect(page.locator("#gioca")).toBeVisible();
@@ -244,9 +250,9 @@ test.describe("home teaser", () => {
     ).toBeVisible();
     await expect(section).toContainText("il bot cresce. ecco cosa è cambiato.");
     await expect(section.getByRole("heading", { level: 3 })).toHaveText([
+      NEWEST_TITLE,
       "la partita in un tocco: arriva la mini app",
       "il bot risponde? ora puoi controllarlo",
-      "il promemoria per la quota non si perde più al riavvio",
     ]);
     await expect(
       section.getByRole("link", { name: "tutte le novità" }),
@@ -340,7 +346,7 @@ test.describe("quality", () => {
   }) => {
     await page.goto("/novita/");
     const badges = page.locator("main article > span[aria-hidden='true']");
-    await expect(badges).toHaveCount(11);
+    await expect(badges).toHaveCount(12);
     await expect(badges.first().locator("svg")).toHaveCount(1);
     const size = await badges
       .first()
