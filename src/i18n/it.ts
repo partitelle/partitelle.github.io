@@ -288,7 +288,7 @@ const privacy: {
               "), quando lo impone la legge o quando ce lo chiedete voi. per esempio, se un giorno potrete chiedere un campo a un centro sportivo, gli manderemo solo quello che serve alla richiesta, mai la lista dei giocatori.",
             ],
             [
-              "non facciamo punteggi o classifiche su di te da dare ad altri. se il bot mostrerà statistiche sui singoli giocatori (per esempio quante partite hai giocato), le vedrà solo il tuo gruppo.",
+              "non facciamo punteggi o classifiche su di te da dare ad altri. se il bot mostrerà statistiche sui singoli giocatori (per esempio in quante partite eri in lista), le vedrà solo il tuo gruppo.",
             ],
             [
               "leggiamo i messaggi solo per capire i comandi: chi gioca, quando, dove. non ne ricaviamo dove abiti, dove ti trovi o altre informazioni personali su di te.",
@@ -594,7 +594,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "la base giuridica è la stessa di tutto il servizio: il nostro legittimo interesse a farlo funzionare (scopo a del ",
+            "la base giuridica è la stessa di tutto il servizio: il nostro legittimo interesse a farlo funzionare e a mostrare al gruppo il suo storico (scopi a ed e del ",
             point7,
             "). in fondo alla mini app trovi il link a questa informativa.",
           ],
@@ -627,7 +627,7 @@ const privacy: {
           type: "ul",
           items: [
             [
-              "7 novembre 2026: il bot salva lo storico delle modifiche alle liste (chi entra, chi si mette in forse, chi si toglie, le squadre) per le future statistiche del gruppo: chi si toglie esce dalla lista ma resta nello storico. aggiornati di conseguenza i punti 3, 7 e 11.",
+              "7 novembre 2026: il bot salva lo storico delle modifiche alle liste (chi entra, chi si mette in forse, chi si toglie, le squadre) per le future statistiche del gruppo: chi si toglie esce dalla lista ma resta nello storico. aggiornati di conseguenza i punti 3, 7, 8, 11 e 15.",
             ],
             [
               "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",

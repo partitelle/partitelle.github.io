@@ -172,7 +172,7 @@ test("the participation log change is the first changelog line", async ({
   await page.goto("/privacy/");
   const items = page.locator('section[aria-labelledby="modifiche"] li');
   await expect(items.first()).toHaveText(
-    "7 novembre 2026: il bot salva lo storico delle modifiche alle liste (chi entra, chi si mette in forse, chi si toglie, le squadre) per le future statistiche del gruppo: chi si toglie esce dalla lista ma resta nello storico. aggiornati di conseguenza i punti 3, 7 e 11.",
+    "7 novembre 2026: il bot salva lo storico delle modifiche alle liste (chi entra, chi si mette in forse, chi si toglie, le squadre) per le future statistiche del gruppo: chi si toglie esce dalla lista ma resta nello storico. aggiornati di conseguenza i punti 3, 7, 8, 11 e 15.",
   );
   await expect(items.nth(1)).toHaveText(
     "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
