@@ -46,6 +46,15 @@
     background-color: var(--color-black);
   }
 
+  /* Captions default to 5% of the video height: about 9 px on a phone. Floor
+     at 12 px on small screens only. Not max(12px, 1em): in WebKit 1em is the
+     16 px of the video element, not the default caption size. */
+  @media (max-width: 30rem) {
+    video::cue {
+      font-size: 12px;
+    }
+  }
+
   html {
     font-family: var(--font-brand);
     font-weight: 500;
