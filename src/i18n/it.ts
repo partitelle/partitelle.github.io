@@ -46,7 +46,7 @@ const privacy: {
   title: "informativa privacy",
   lead: "quali dati salva il bot, perché, e come chiederci di vederli o cancellarli.",
   updatedLabel: "ultimo aggiornamento:",
-  updated: { iso: "2026-11-02", text: "2 novembre 2026" },
+  updated: { iso: "2026-11-07", text: "7 novembre 2026" },
   indexLabel: "indice",
   sections: [
     {
@@ -128,6 +128,9 @@ const privacy: {
             ],
             [
               "la lista dei partecipanti: per ogni persona, il nome con cui compare in lista, lo stato (confermato o in forse), la posizione in lista, la squadra (nera o bianca), la data e l'ora in cui è entrata in lista e quelle dell'ultima modifica;",
+            ],
+            [
+              "lo storico delle modifiche alle liste: ogni volta che una riga della lista cambia (qualcuno entra in lista, si mette in forse, conferma, si toglie, viene tolto o viene messo in una squadra), salviamo cosa è cambiato e quando, il nome con cui la persona compariva in lista in quel momento, il suo ID utente se lo abbiamo, e se la modifica l'ha fatta la persona stessa o qualcun altro (in questo caso non salviamo chi è stato);",
             ],
             [
               "per i gruppi che usavano già le versioni precedenti del bot, il campo predefinito del gruppo.",
@@ -253,12 +256,18 @@ const privacy: {
                 " (per esempio centri sportivi): oggi non lo facciamo. se lo faremo, useremo statistiche aggregate e anonime come quelle del punto c). daremo dati su un singolo gruppo solo se è il gruppo a chiederlo, e mai la lista dei giocatori.",
               ],
             },
+            {
+              lead: "e) statistiche del gruppo:",
+              segments: [
+                " usare lo storico delle partite e delle liste per mostrare al gruppo le sue statistiche, per esempio quante partite avete organizzato e chi era in lista. le vedrà solo chi è nel gruppo. oggi il bot salva lo storico ma non mostra ancora statistiche: quando lo farà, aggiorneremo questa informativa con cosa mostra e come non comparire. non useremo queste statistiche per decidere chi gioca e non faremo classifiche di chi si toglie o resta in forse.",
+              ],
+            },
           ],
         },
         {
           type: "p",
           segments: [
-            "la base giuridica di tutti questi scopi è il nostro legittimo interesse (art. 6, par. 1, lett. f del GDPR): offrire un servizio gratuito che funzioni, migliorarlo e capire come viene usato, in forma anonima. puoi opporti in qualsiasi momento (vedi il ",
+            "la base giuridica di tutti questi scopi è il nostro legittimo interesse (art. 6, par. 1, lett. f del GDPR): offrire un servizio gratuito che funzioni e migliorarlo, mostrare a ogni gruppo il suo storico e capire, in forma anonima, come viene usato il servizio. puoi opporti in qualsiasi momento (vedi il ",
             point12,
             ").",
           ],
@@ -279,7 +288,7 @@ const privacy: {
               "), quando lo impone la legge o quando ce lo chiedete voi. per esempio, se un giorno potrete chiedere un campo a un centro sportivo, gli manderemo solo quello che serve alla richiesta, mai la lista dei giocatori.",
             ],
             [
-              "non facciamo punteggi o classifiche su di te da dare ad altri. se il bot mostrerà statistiche sui singoli giocatori (per esempio quante partite hai giocato), le vedrà solo il tuo gruppo.",
+              "non facciamo punteggi o classifiche su di te da dare ad altri. se il bot mostrerà statistiche sui singoli giocatori (per esempio in quante partite eri in lista), le vedrà solo il tuo gruppo.",
             ],
             [
               "leggiamo i messaggi solo per capire i comandi: chi gioca, quando, dove. non ne ricaviamo dove abiti, dove ti trovi o altre informazioni personali su di te.",
@@ -369,13 +378,15 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "oggi non cancelliamo i dati in automatico: li conserviamo finché il servizio è attivo, perché lo storico delle partite fa parte del servizio e serve alle statistiche anonime.",
+            "oggi non cancelliamo i dati in automatico: li conserviamo finché il servizio è attivo, perché lo storico delle partite fa parte del servizio e serve alle statistiche del gruppo e a quelle anonime.",
           ],
         },
         {
           type: "p",
           segments: [
-            'con /stop la partita si chiude, ma resta salvata nello storico. quando scrivi "toglimi", o qualcuno scrive "togli <nome>", il nome viene cancellato dalla lista della partita in corso; resta nelle partite già chiuse.',
+            'con /stop la partita si chiude, ma resta salvata nello storico. quando scrivi "toglimi", o qualcuno scrive "togli <nome>", il nome esce dalla lista della partita in corso, ma resta nello storico delle modifiche di quella partita, e resta nelle partite già chiuse. se vuoi che sparisca del tutto, chiedicelo (vedi il ',
+            point12,
+            ").",
           ],
         },
         {
@@ -583,7 +594,7 @@ const privacy: {
         {
           type: "p",
           segments: [
-            "la base giuridica è la stessa di tutto il servizio: il nostro legittimo interesse a farlo funzionare (scopo a del ",
+            "la base giuridica è la stessa di tutto il servizio: il nostro legittimo interesse a farlo funzionare e a mostrare al gruppo il suo storico (scopi a ed e del ",
             point7,
             "). in fondo alla mini app trovi il link a questa informativa.",
           ],
@@ -615,6 +626,9 @@ const privacy: {
         {
           type: "ul",
           items: [
+            [
+              "7 novembre 2026: il bot salva lo storico delle modifiche alle liste (chi entra, chi si mette in forse, chi si toglie, le squadre) per le future statistiche del gruppo: chi si toglie esce dalla lista ma resta nello storico. aggiornati di conseguenza i punti 3, 7, 8, 11 e 15.",
+            ],
             [
               "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
             ],

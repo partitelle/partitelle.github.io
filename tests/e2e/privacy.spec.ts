@@ -40,9 +40,9 @@ test("has the 17 sections in order, with the update date", async ({ page }) => {
   await page.goto("/privacy/");
   await expect(page.getByRole("heading", { level: 2 })).toHaveText(HEADINGS);
   await expect(page.locator("main")).toContainText(
-    "ultimo aggiornamento: 2 novembre 2026",
+    "ultimo aggiornamento: 7 novembre 2026",
   );
-  await expect(page.locator("time")).toHaveAttribute("datetime", "2026-11-02");
+  await expect(page.locator("time")).toHaveAttribute("datetime", "2026-11-07");
   await expect(page.locator("time")).toHaveAttribute(
     "datetime",
     /^\d{4}-\d{2}-\d{2}$/,
@@ -166,10 +166,15 @@ test("the mini app section sits at point 15 and is linked from points 3 and 6", 
   await expect(page.locator("#dati-salvati")).toBeInViewport();
 });
 
-test("the mini app change is the first changelog line", async ({ page }) => {
+test("the participation log change is the first changelog line", async ({
+  page,
+}) => {
   await page.goto("/privacy/");
-  const first = page.locator('section[aria-labelledby="modifiche"] li').first();
-  await expect(first).toHaveText(
+  const items = page.locator('section[aria-labelledby="modifiche"] li');
+  await expect(items.first()).toHaveText(
+    "7 novembre 2026: il bot salva lo storico delle modifiche alle liste (chi entra, chi si mette in forse, chi si toglie, le squadre) per le future statistiche del gruppo: chi si toglie esce dalla lista ma resta nello storico. aggiornati di conseguenza i punti 3, 7, 8, 11 e 15.",
+  );
+  await expect(items.nth(1)).toHaveText(
     "2 novembre 2026: aggiunta la mini app (punto 15): quali dati riceve da Telegram, cosa ne facciamo, cosa si può fare dalla mini app e cosa resta sul dispositivo; aggiornati di conseguenza i punti 2, 3, 6, 7, 9 e 13.",
   );
 });
