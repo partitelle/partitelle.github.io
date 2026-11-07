@@ -21,14 +21,14 @@ import VideoFigure from "./VideoFigure.astro";
       class="lg:col-span-9 lg:col-start-4"
       title={it.video.title}
       sources={[
-        { src: "/video/presentazione-placeholder.mp4", media: "(min-width: 1024px)" },
-        { src: "/video/presentazione-placeholder.mp4" },
+        { src: "/video/presentazione-1080.mp4", media: "(min-width: 1024px)" },
+        { src: "/video/presentazione-720.mp4" },
       ]}
-      captions="/video/presentazione-placeholder.it.vtt"
+      captions="/video/presentazione.it.vtt"
       poster={{
-        src: "/video/presentazione-placeholder-poster-960.webp",
+        src: "/video/presentazione-poster-960.webp",
         srcset:
-          "/video/presentazione-placeholder-poster-960.webp 960w, /video/presentazione-placeholder-poster-1920.webp 1920w",
+          "/video/presentazione-poster-960.webp 960w, /video/presentazione-poster-1920.webp 1920w",
         sizes: "(min-width: 1024px) 55rem, calc(100vw - 3rem)",
         width: 1920,
         height: 1080,

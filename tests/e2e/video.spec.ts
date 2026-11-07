@@ -2,7 +2,31 @@ import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 import { tabTo } from "./keyboard";
 
-const START_NAME = "guarda il video, 56 secondi";
+const TRANSCRIPT = [
+  "ogni volta la stessa storia.",
+  "mercoledì si gioca.",
+  "ma tra tutti i messaggi non si capisce più niente.",
+  "così qualcuno si sacrifica: il coordinatore.",
+  "auguri.",
+  "fa la conta.",
+  "copia, incolla.",
+  "e tu sei in lista solo se il coordinatore ti aggiunge.",
+  "abbiamo creato partitelle.",
+  "un bot su Telegram.",
+  "ecco il nuovo coordinatore.",
+  "nessuno fa più la conta.",
+  "ti aggiungi da solo.",
+  "non sai se vieni? ti metti in forse.",
+  "e la lista la tiene il bot.",
+  "poi sorteggia le squadre.",
+  "non ti convincono? scambi i giocatori.",
+  "troppa fatica?",
+  "ti capiamo. c'è persino una mini app, a portata di mano.",
+  "aggiungi il bot al tuo gruppo.",
+  "e mercoledì, si gioca.",
+];
+
+const START_NAME = "guarda il video, 57 secondi";
 
 const start = (page: Page) => page.locator("#video [data-video-start]");
 const video = (page: Page) => page.locator("#video video");
@@ -72,9 +96,18 @@ test.describe("with JavaScript", () => {
       "media",
       "(min-width: 1024px)",
     );
+    await expect(sources.nth(0)).toHaveAttribute(
+      "src",
+      "/video/presentazione-1080.mp4",
+    );
     await expect(sources.nth(1)).not.toHaveAttribute("media", /.*/);
+    await expect(sources.nth(1)).toHaveAttribute(
+      "src",
+      "/video/presentazione-720.mp4",
+    );
     const track = page.locator("#video video track");
     await expect(track).toHaveCount(1);
+    await expect(track).toHaveAttribute("src", "/video/presentazione.it.vtt");
     await expect(track).toHaveAttribute("kind", "captions");
     await expect(track).toHaveAttribute("srclang", "it");
     await expect(track).toHaveAttribute("label", "italiano");
@@ -93,7 +126,14 @@ test.describe("with JavaScript", () => {
       "sizes",
       "(min-width: 1024px) 55rem, calc(100vw - 3rem)",
     );
-    expect(await img.getAttribute("srcset")).toMatch(/ 960w, .* 1920w$/);
+    await expect(img).toHaveAttribute(
+      "srcset",
+      "/video/presentazione-poster-960.webp 960w, /video/presentazione-poster-1920.webp 1920w",
+    );
+    await expect(img).toHaveAttribute(
+      "src",
+      "/video/presentazione-poster-960.webp",
+    );
     await expect(img).toHaveClass(/object-cover/);
     await expect(video(page)).not.toHaveAttribute("poster", /.*/);
   });
@@ -166,24 +206,62 @@ test.describe("with JavaScript", () => {
     expect(await bg(video(page))).toBe("rgb(17, 17, 17)");
   });
 
-  test("the platform name appears only in credit line 3", async ({ page }) => {
+  test("the platform name appears only in credit line 3 and the transcript", async ({
+    page,
+  }) => {
     const count = (t: string) => (t.match(/telegram/gi) ?? []).length;
-    const all = count((await page.locator("#video").textContent()) ?? "");
+    const text = async (sel: string) =>
+      (await page.locator(`#video ${sel}`).first().textContent()) ?? "";
     const lines = page.locator("#video figcaption p");
     await expect(lines).toHaveCount(3);
     const third = count((await lines.nth(2).textContent()) ?? "");
     expect(third).toBeGreaterThanOrEqual(1);
-    expect(all).toBe(third);
     for (const i of [0, 1]) {
       expect(count((await lines.nth(i).textContent()) ?? "")).toBe(0);
     }
-    for (const sel of ["h3", "button", "details"]) {
-      expect(
-        count(
-          (await page.locator(`#video ${sel}`).first().textContent()) ?? "",
-        ),
-      ).toBe(0);
-    }
+    for (const sel of ["h3", "button"]) expect(count(await text(sel))).toBe(0);
+    expect(
+      count((await page.locator("#video track").getAttribute("label")) ?? ""),
+    ).toBe(0);
+    // the transcript may name it, once, with a capital T
+    const transcript = await text("details");
+    expect(count(transcript)).toBe(1);
+    expect(transcript).toContain("Telegram");
+    expect(transcript).not.toContain("\u2019");
+    expect(count((await page.locator("#video").textContent()) ?? "")).toBe(
+      third + 1,
+    );
+  });
+
+  test("nothing in the page references a placeholder file", async ({
+    request,
+  }) => {
+    const html = await (await request.get("/")).text();
+    expect(html).not.toContain("-placeholder");
+  });
+
+  test("the captions file has exactly the band cues, in order", async ({
+    request,
+  }) => {
+    const res = await request.get("/video/presentazione.it.vtt");
+    expect(res.ok()).toBe(true);
+    const text = await res.text();
+    expect(text.startsWith("WEBVTT\n")).toBe(true);
+    const ids = text
+      .split("\n\n")
+      .slice(1)
+      .map((block) => block.trim().split("\n")[0]);
+    expect(ids).toEqual([
+      "C03",
+      "C04a",
+      "C08",
+      "C09",
+      "C10",
+      "C14",
+      "C15",
+      "C16",
+      "C17",
+    ]);
   });
 
   test("the frame uses the video container token, not a literal", async ({
@@ -210,7 +288,7 @@ test.describe("with JavaScript", () => {
     // aria-label and the label text alone is what a speech user can say.
     expect(
       await label.evaluate((el) => getComputedStyle(el, "::after").content),
-    ).toBe('" · 0:56"');
+    ).toBe('" · 0:57"');
     let box = await pill.boundingBox();
     let fb = await frame(page).boundingBox();
     expect(box?.height).toBeCloseTo(48, 0);
@@ -273,9 +351,7 @@ test.describe("with JavaScript", () => {
       active: document.activeElement === v,
     }));
     expect(state.controls).toBe(true);
-    expect(state.poster).toMatch(
-      /\/video\/presentazione-placeholder-poster-\d+\.webp$/,
-    );
+    expect(state.poster).toMatch(/\/video\/presentazione-poster-\d+\.webp$/);
     expect(state.active).toBe(true);
   }
 
@@ -316,7 +392,7 @@ test.describe("with JavaScript", () => {
   test("credits: three lines, two links, same tab", async ({ page }) => {
     const lines = page.locator("#video figcaption p");
     await expect(lines).toHaveText([
-      "musica: Pure House Beats 01 di Sascha Ende, licenza CC BY 4.0, accorciata per il video.",
+      "musica: Pure House Beats 01 di Sascha Ende, licenza CC BY 4.0, modificata per il video.",
       "voce generata con IA.",
       "partitelle è un progetto indipendente, non affiliato a Telegram.",
     ]);
@@ -349,9 +425,8 @@ test.describe("with JavaScript", () => {
       false,
     );
     await summary.click();
-    await expect(details.locator("p")).toHaveText([
-      "segnaposto: il testo arriva con il video.",
-    ]);
+    await expect(details.locator("p")).toHaveText(TRANSCRIPT);
+    await expect(details.locator("p")).toHaveCount(21);
   });
 
   test("every request is same-origin, before and after playing", async ({
@@ -386,9 +461,10 @@ test.describe("with JavaScript", () => {
     });
     expect(urls.length).toBeGreaterThan(0);
     for (const url of urls)
-      expect(new URL(url).pathname).toBe(
-        "/video/presentazione-placeholder.mp4",
-      );
+      expect([
+        "/video/presentazione-1080.mp4",
+        "/video/presentazione-720.mp4",
+      ]).toContain(new URL(url).pathname);
   });
 
   test("axe: no violations on the block, before and after starting", async ({
